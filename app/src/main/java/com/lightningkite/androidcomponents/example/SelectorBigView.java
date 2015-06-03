@@ -25,6 +25,7 @@ public class SelectorBigView extends BigView implements AdapterView.OnItemClickL
     static {
         mExamples.add(new Entry(ExampleBigView.class));
         mExamples.add(new Entry(FormBigView.class));
+        mExamples.add(new Entry(RetroRushBigView.class));
     }
 
     @InjectView(R.id.selector_list)
