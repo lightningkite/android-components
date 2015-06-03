@@ -107,6 +107,16 @@ public class EntryDateView extends FrameLayout implements DatePickerDialog.OnDat
     }
 
     @Override
+    public void focus() {
+
+    }
+
+    @Override
+    public void notifyLast() {
+
+    }
+
+    @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         GregorianCalendar cal = new GregorianCalendar();
         cal.set(GregorianCalendar.YEAR, year);

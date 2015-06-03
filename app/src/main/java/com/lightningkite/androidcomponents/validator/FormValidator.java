@@ -5,8 +5,9 @@ import java.util.ArrayList;
 /**
  * Created by jivie on 6/2/15.
  */
-public class FormValidator implements Validator {
-    private ArrayList<Validator> mValidators;
+public class FormValidator extends Validator {
+    static public final int RESULT_PROBLEM = 1;
+    private ArrayList<Validator> mValidators = new ArrayList<>();
 
     public FormValidator() {
     }
@@ -18,11 +19,13 @@ public class FormValidator implements Validator {
 
     @Override
     public boolean validate() {
+        boolean valid = true;
         for (Validator validator : mValidators) {
             if (!validator.validate()) {
-                return false;
+                valid = false;
             }
         }
-        return true;
+        result(valid ? RESULT_OK : RESULT_PROBLEM);
+        return valid;
     }
 }

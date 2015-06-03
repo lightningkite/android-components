@@ -139,6 +139,16 @@ public class EntryTextView extends FrameLayout implements FormEntry {
         }
     }
 
+    @Override
+    public void focus() {
+        mTextView.requestFocus();
+    }
+
+    @Override
+    public void notifyLast() {
+        mTextView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+    }
+
     public static abstract class ShortWatcher implements TextWatcher {
 
         @Override

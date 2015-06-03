@@ -9,9 +9,9 @@ import java.util.regex.Pattern;
  */
 public class IntegerValidator extends TextPatternValidator {
 
-    public static final Pattern INTEGER_PATTERN = Pattern.compile("[-+]?[0-9]+");
+    public static final Pattern INTEGER_PATTERN = Pattern.compile("[-+]?[0-9]*");
 
-    public IntegerValidator(TextView textView) {
-        super(textView, INTEGER_PATTERN);
+    public IntegerValidator(TextView textView, boolean optional) {
+        super(textView, INTEGER_PATTERN, optional);
     }
 }

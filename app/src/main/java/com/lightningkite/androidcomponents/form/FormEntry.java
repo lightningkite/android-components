@@ -7,4 +7,8 @@ public interface FormEntry {
     Object getData();
 
     void setData(Object object);
+
+    void focus();
+
+    void notifyLast();
 }

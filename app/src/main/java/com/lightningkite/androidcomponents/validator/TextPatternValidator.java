@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
  */
 public class TextPatternValidator extends TextValidator {
 
-    public static final int ERROR_INVALID = 2;
+    public static final int RESULT_INVALID = 2;
     private final Pattern mPattern;
 
-    public TextPatternValidator(TextView textView, Pattern pattern) {
-        super(textView);
+    public TextPatternValidator(TextView textView, Pattern pattern, boolean optional) {
+        super(textView, optional);
         mPattern = pattern;
     }
 
@@ -21,9 +21,10 @@ public class TextPatternValidator extends TextValidator {
     public boolean validate() {
         if (!super.validate()) return false;
         if (!mPattern.matcher(mView.getText()).matches()) {
-            onError(ERROR_INVALID);
+            result(RESULT_INVALID);
             return false;
         }
+        result(RESULT_OK);
         return true;
     }
 }

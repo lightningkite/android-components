@@ -93,6 +93,14 @@ public class EntrySelectView extends FrameLayout implements FormEntry {
         }
     }
 
+    @Override
+    public void focus() {
+    }
+
+    @Override
+    public void notifyLast() {
+    }
+
     public interface EntrySelectListener {
         void onSelect(EntrySelectView v);
     }

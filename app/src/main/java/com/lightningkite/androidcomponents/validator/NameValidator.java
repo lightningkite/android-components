@@ -11,7 +11,7 @@ public class NameValidator extends TextPatternValidator {
 
     public static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z'-]+");
 
-    public NameValidator(TextView textView) {
-        super(textView, NAME_PATTERN);
+    public NameValidator(TextView textView, boolean optional) {
+        super(textView, NAME_PATTERN, optional);
     }
 }

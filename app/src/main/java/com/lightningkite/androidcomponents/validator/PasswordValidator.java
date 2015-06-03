@@ -11,7 +11,7 @@ public class PasswordValidator extends TextValidator {
     private final int mMinLength;
 
     public PasswordValidator(TextView textView, int minLength) {
-        super(textView);
+        super(textView, true);
         mMinLength = minLength;
     }
 
@@ -21,7 +21,7 @@ public class PasswordValidator extends TextValidator {
 
         String text = mView.getText().toString();
         if (text.length() < mMinLength) {
-            onError(ERROR_NOT_LONG_ENOUGH);
+            result(ERROR_NOT_LONG_ENOUGH);
             return false;
         }
 

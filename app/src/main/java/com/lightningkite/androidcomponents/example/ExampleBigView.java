@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnLongClick;
+import butterknife.OnClick;
 
 /**
  * Created by jivie on 6/2/15.
@@ -29,9 +29,8 @@ public class ExampleBigView extends BigView {
         mTextView.setText(String.valueOf(UUID.randomUUID().hashCode() % 9999));
     }
 
-    @OnLongClick(R.id.example_text)
-    boolean onTextLongClick() {
-        goTo(ExampleForm.class);
-        return true;
+    @OnClick(R.id.example_text)
+    void onTextClick() {
+        goTo(ExampleFormBigView.class);
     }
 }
