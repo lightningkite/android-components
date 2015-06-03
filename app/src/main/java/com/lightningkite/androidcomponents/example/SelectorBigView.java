@@ -1,16 +1,19 @@
 package com.lightningkite.androidcomponents.example;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.lightningkite.androidcomponents.R;
+import com.lightningkite.androidcomponents.adapter.CustomListAdapter;
 import com.lightningkite.androidcomponents.bigview.BigView;
 import com.lightningkite.androidcomponents.bigview.BigViewContainer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -20,13 +23,15 @@ import butterknife.InjectView;
  */
 public class SelectorBigView extends BigView implements AdapterView.OnItemClickListener {
 
-    public static final ArrayList<Entry> mExamples = new ArrayList<>();
+    public static final ArrayList<Class<? extends BigView>> EXAMPLES = new ArrayList<>();
 
     static {
-        mExamples.add(new Entry(ExampleBigView.class));
-        mExamples.add(new Entry(FormBigView.class));
-        mExamples.add(new Entry(RetroRushBigView.class));
+        EXAMPLES.add(ExampleBigView.class);
+        EXAMPLES.add(FormBigView.class);
+        EXAMPLES.add(RetroRushBigView.class);
     }
+
+    private final MyAdapter mAdapter;
 
     @InjectView(R.id.selector_list)
     ListView mListView;
@@ -37,26 +42,36 @@ public class SelectorBigView extends BigView implements AdapterView.OnItemClickL
         inflate(mActivity, R.layout.bigview_example_selector, this);
         ButterKnife.inject(this);
 
-        mListView.setAdapter(new ArrayAdapter<>(mActivity, R.layout.row_example, R.id.example_text, mExamples));
+        mAdapter = new MyAdapter(mActivity, EXAMPLES);
+
+        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        goTo(mExamples.get(position).mClass);
+        goTo(mAdapter.get(position));
     }
 
-    static private class Entry {
 
-        private final Class<? extends BigView> mClass;
-
-        public Entry(Class<? extends BigView> clazz) {
-            mClass = clazz;
+    private class MyAdapter extends CustomListAdapter<Class<? extends BigView>, Holder> {
+        public MyAdapter(Context context, List<Class<? extends BigView>> list) {
+            super(context, R.layout.row_example, list);
         }
 
         @Override
-        public String toString() {
-            return mClass.getSimpleName();
+        protected Holder makeHolder() {
+            return new Holder();
         }
+
+        @Override
+        public void updateView(Class<? extends BigView> item, Holder holder, View convertView) {
+            holder.mLabelView.setText(item.getSimpleName());
+        }
+    }
+
+    static public class Holder {
+        @InjectView(R.id.example_label)
+        TextView mLabelView;
     }
 }

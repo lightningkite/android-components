@@ -18,7 +18,7 @@ import butterknife.OnClick;
  */
 public class ExampleBigView extends BigView {
 
-    @InjectView(R.id.example_text)
+    @InjectView(R.id.example_label)
     TextView mTextView;
 
     public ExampleBigView(BigViewContainer container, Bundle arguments, int id) {
@@ -29,7 +29,7 @@ public class ExampleBigView extends BigView {
         mTextView.setText(String.valueOf(UUID.randomUUID().hashCode() % 9999));
     }
 
-    @OnClick(R.id.example_text)
+    @OnClick(R.id.example_label)
     void onTextClick() {
         goTo(ExampleBigView.class);
     }
