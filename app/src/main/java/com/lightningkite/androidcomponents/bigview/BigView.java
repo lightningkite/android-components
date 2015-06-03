@@ -1,5 +1,6 @@
 package com.lightningkite.androidcomponents.bigview;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -10,12 +11,14 @@ import android.widget.FrameLayout;
 public class BigView extends FrameLayout {
     protected final BigViewContainer mContainer;
     protected final Bundle mArguments;
+    protected final Activity mActivity;
     private int mId;
 
     public BigView(BigViewContainer container, Bundle arguments, int id) {
-        super(container.getContext());
+        super(container.getActivity());
         mContainer = container;
         mArguments = arguments;
+        mActivity = container.getActivity();
         mId = id;
     }
 

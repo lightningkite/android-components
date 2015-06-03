@@ -24,13 +24,13 @@ public class ExampleBigView extends BigView {
     public ExampleBigView(BigViewContainer container, Bundle arguments, int id) {
         super(container, arguments, id);
 
-        inflate(mContainer.getContext(), R.layout.bigview_example, this);
+        inflate(mActivity, R.layout.bigview_example, this);
         ButterKnife.inject(this);
         mTextView.setText(String.valueOf(UUID.randomUUID().hashCode() % 9999));
     }
 
     @OnClick(R.id.example_text)
     void onTextClick() {
-        goTo(ExampleFormBigView.class);
+        goTo(ExampleBigView.class);
     }
 }

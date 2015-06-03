@@ -37,6 +37,16 @@ public class FormView extends LinearLayout {
             view.setBackgroundColor(code == Validator.RESULT_OK ? 0x0 : 0x80FF0000);
         }
     };
+    private int mDividerResource = -1;
+
+    public int getDividerResource() {
+        return mDividerResource;
+    }
+
+    public FormView setDividerResource(int mDividerResource) {
+        this.mDividerResource = mDividerResource;
+        return this;
+    }
 
     public FormView(Context context) {
         super(context);
@@ -70,6 +80,10 @@ public class FormView extends LinearLayout {
 
         mEntries.put(id, view);
         mEntryList.add(view);
+
+        if (mDividerResource != -1) {
+            inflate(getContext(), mDividerResource, this);
+        }
 
         return view;
     }

@@ -1,7 +1,6 @@
 package com.lightningkite.androidcomponents.bigview;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -64,11 +63,6 @@ public abstract class BasicBVCActivity extends Activity implements BigViewContai
     public void onLowMemory() {
         if (mView != null) mView.onLowMemory();
         super.onLowMemory();
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.lightningkite.androidcomponents.bigview;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,8 +8,6 @@ import android.os.Bundle;
  * Created by jivie on 6/2/15.
  */
 public interface BigViewContainer {
-    Context getContext();
-
     Activity getActivity();
 
     void onFinish(int id);

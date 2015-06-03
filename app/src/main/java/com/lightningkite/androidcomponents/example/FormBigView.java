@@ -14,18 +14,20 @@ import butterknife.OnClick;
 /**
  * Created by jivie on 6/2/15.
  */
-public class ExampleFormBigView extends BigView {
+public class FormBigView extends BigView {
 
     @InjectView(R.id.form_form)
     FormView mFormView;
 
-    public ExampleFormBigView(BigViewContainer container, Bundle arguments, int id) {
+    public FormBigView(BigViewContainer container, Bundle arguments, int id) {
         super(container, arguments, id);
 
-        inflate(mContainer.getContext(), R.layout.bigview_form_example, this);
+        inflate(mActivity, R.layout.bigview_form_example, this);
         ButterKnife.inject(this);
 
-        mFormView.addEntryEmail("email", "Email", "Enter your email", false)
+        mFormView
+                .setDividerResource(R.layout.view_horizontal_line)
+                .addEntryEmail("email", "Email", "Enter your email", false)
                 .addEntryPassword("password", "Password", "Enter your password", 8)
                 .addEntryText("fav_color", "Favorite Color", "Enter your favorite color", false)
                 .addEntryInteger("lucky_num", "Lucky Number", "Enter your lucky number", false)

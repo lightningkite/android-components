@@ -11,7 +11,7 @@ public class ExampleBasicBVCActivity extends BasicBVCActivity {
 
     @Override
     protected Class<? extends BigView> getDefaultViewClass() {
-        return ExampleBigView.class;
+        return SelectorBigView.class;
     }
 
     @Override
