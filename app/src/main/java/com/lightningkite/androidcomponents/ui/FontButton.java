@@ -6,7 +6,8 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-import com.hallr.R;
+import com.lightningkite.androidcomponents.R;
+
 
 /**
  * A button that uses the custom font.
@@ -36,7 +37,7 @@ public class FontButton extends Button {
             fontName = Fonts.DEFAULT;
         tf = Fonts.getTypeface(getContext(), fontName);
 
-        if (Fonts.mUseCustomFonts && tf != null)
+        if (tf != null)
             setTypeface(tf);
     }
 }

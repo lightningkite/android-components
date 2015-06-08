@@ -3,8 +3,7 @@ package com.lightningkite.androidcomponents.validator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Created by jivie on 6/8/15.
@@ -30,7 +29,8 @@ public class EmailValidatorTest {
     public void testValid() {
         mValidator = new EmailValidator(null, false);
         for (String testEmail : validEmails) {
-            assertTrue(testEmail + " is valid, but validator said it isn't.", mValidator.validate(testEmail));
+            mValidator.validate(testEmail);
+            assertEquals(Validator.RESULT_OK, mValidator.getResult());
         }
     }
 
@@ -39,19 +39,21 @@ public class EmailValidatorTest {
         mValidator = new EmailValidator(null, false);
         for (String testEmail : invalidEmails) {
             mValidator.validate(testEmail);
-            assertEquals(testEmail + " is invalid, but validator said it is.", TextPatternValidator.RESULT_INVALID, mValidator.getResult());
+            assertEquals(TextPatternValidator.RESULT_INVALID, mValidator.getResult());
         }
     }
 
     @Test
     public void testEmptyOptional() {
         mValidator = new EmailValidator(null, true);
-        assertTrue(mValidator.validate(""));
+        mValidator.validate("");
+        assertEquals(Validator.RESULT_OK, mValidator.getResult());
     }
 
     @Test
     public void testEmptyRequired() {
         mValidator = new EmailValidator(null, false);
-        assertFalse(mValidator.validate(""));
+        mValidator.validate("");
+        assertNotEquals(Validator.RESULT_OK, mValidator.getResult());
     }
 }

@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import com.hallr.R;
+import com.lightningkite.androidcomponents.R;
 
 public class FontEditText extends EditText {
     public FontEditText(Context context, AttributeSet attrs, int defStyle) {
@@ -32,7 +32,7 @@ public class FontEditText extends EditText {
             fontName = Fonts.DEFAULT;
         tf = Fonts.getTypeface(getContext(), fontName);
 
-        if (Fonts.mUseCustomFonts && tf != null)
+        if (tf != null)
             setTypeface(tf);
     }
 }
