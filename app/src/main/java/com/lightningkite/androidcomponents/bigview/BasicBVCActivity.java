@@ -106,5 +106,11 @@ public abstract class BasicBVCActivity extends Activity implements BigViewContai
         overridePendingTransition();
     }
 
+    @Override
+    public void onStartIntentForResult(int id, Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+        overridePendingTransition();
+    }
+
 
 }

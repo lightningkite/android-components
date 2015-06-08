@@ -34,6 +34,7 @@ public class RetroRushBigView extends BigView {
         mDatabaseCountView.setText(String.valueOf(
                 new RushSearch().count(CurrentWeather.class)
         ));
+
         fetchCurrentWeather();
     }
 

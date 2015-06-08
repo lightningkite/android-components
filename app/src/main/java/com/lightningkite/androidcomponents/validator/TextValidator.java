@@ -11,11 +11,11 @@ public class TextValidator extends Validator {
     public static final int RESULT_REQUIRED = 2;
 
     protected TextView mView;
-    protected final boolean mRequired;
+    protected final boolean mOptional;
 
-    public TextValidator(TextView textView, boolean required) {
+    public TextValidator(TextView textView, boolean optional) {
         mView = textView;
-        mRequired = required;
+        mOptional = optional;
     }
 
     public void setTextView(TextView v) {
@@ -23,19 +23,24 @@ public class TextValidator extends Validator {
     }
 
     @Override
-    public boolean validate() {
+    public void validate() {
         if (mView == null) {
             result(RESULT_NO_TEXT_VIEW);
-            return false;
+            return;
         }
+        validate(mView.getText().toString());
+    }
 
-        if (mView.length() == 0 && mRequired) {
+    public void validate(String text) {
+        super.validate();
+        if (mResult != RESULT_OK) return;
+
+        if (text.length() == 0 && !mOptional) {
             result(RESULT_REQUIRED);
-            return false;
+            return;
         }
 
         result(RESULT_OK);
-        return true;
     }
 
     @Override

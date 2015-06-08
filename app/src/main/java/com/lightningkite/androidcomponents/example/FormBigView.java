@@ -31,7 +31,8 @@ public class FormBigView extends BigView {
                 .addEntryPassword("password", "Password", "Enter your password", 8)
                 .addEntryText("fav_color", "Favorite Color", "Enter your favorite color", false)
                 .addEntryInteger("lucky_num", "Lucky Number", "Enter your lucky number", false)
-                .addEntryDecimal("miles", "Miles", "Miles traveled (required)", true)
+                .addEntryDecimal("miles", "Miles", "Miles traveled (optional)", true)
+                .addEntryToggle("roundtrip", "Round Trip", true)
                 .start();
         mFormView.focusOnFirst();
     }

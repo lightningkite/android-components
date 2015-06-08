@@ -16,15 +16,12 @@ public class PasswordValidator extends TextValidator {
     }
 
     @Override
-    public boolean validate() {
-        if (!super.validate()) return false;
+    public void validate(String text) {
+        super.validate(text);
+        if (mResult != RESULT_OK) return;
 
-        String text = mView.getText().toString();
         if (text.length() < mMinLength) {
             result(ERROR_NOT_LONG_ENOUGH);
-            return false;
         }
-
-        return true;
     }
 }

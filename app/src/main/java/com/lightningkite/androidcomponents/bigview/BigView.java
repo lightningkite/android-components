@@ -22,6 +22,10 @@ public class BigView extends FrameLayout {
         mId = id;
     }
 
+    public Activity getActivity() {
+        return mActivity;
+    }
+
     public int getId() {
         return mId;
     }
@@ -59,6 +63,10 @@ public class BigView extends FrameLayout {
 
     public void setResult(int resultCode, Intent data) {
         mContainer.onSetResult(mId, resultCode, data);
+    }
+
+    public void startIntentForResult(Intent intent, int requestCode) {
+        mContainer.onStartIntentForResult(mId, intent, requestCode);
     }
 
     public void finish() {

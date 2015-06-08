@@ -18,14 +18,16 @@ public class FormValidator extends Validator {
     }
 
     @Override
-    public boolean validate() {
-        boolean valid = true;
+    public void validate() {
+        int result = RESULT_OK;
         for (Validator validator : mValidators) {
-            if (!validator.validate()) {
-                valid = false;
+            validator.validate();
+            int subresult = validator.getResult();
+            if (subresult != 0) {
+                result = RESULT_PROBLEM;
+                mFirstView = validator.getView();
             }
         }
-        result(valid ? RESULT_OK : RESULT_PROBLEM);
-        return valid;
+        result(result);
     }
 }

@@ -8,16 +8,23 @@ import android.view.View;
 public abstract class Validator {
     public static final int RESULT_OK = 0;
     private OnResultListener mListener;
+    protected int mResult = 0;
+    protected View mFirstView;
 
-    public abstract boolean validate();
+    public void validate() {
+        mResult = RESULT_OK;
+    }
 
     public void result(int code, View view) {
+        mResult = code;
+        mFirstView = view;
         if (mListener != null) {
             mListener.onResult(code, view);
         }
     }
 
     public void result(int code) {
+        mResult = code;
         if (mListener != null) {
             mListener.onResult(code, null);
         }
@@ -25,6 +32,14 @@ public abstract class Validator {
 
     public void setListener(OnResultListener listener) {
         mListener = listener;
+    }
+
+    public int getResult() {
+        return mResult;
+    }
+
+    public View getView() {
+        return mFirstView;
     }
 
     public interface OnResultListener {

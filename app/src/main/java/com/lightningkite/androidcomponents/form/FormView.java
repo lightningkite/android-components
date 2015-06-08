@@ -88,8 +88,8 @@ public class FormView extends LinearLayout {
         return view;
     }
 
-    public FormView addEntryText(String id, String label, String hint, boolean required) {
-        addEntryText(id, label, hint, new TextValidator(null, required));
+    public FormView addEntryText(String id, String label, String hint, boolean optional) {
+        addEntryText(id, label, hint, new TextValidator(null, optional));
         return this;
     }
 
@@ -99,27 +99,37 @@ public class FormView extends LinearLayout {
         return this;
     }
 
-    public FormView addEntryEmail(String id, String label, String hint, boolean required) {
-        EntryTextView v = addEntryText(id, label, hint, new EmailValidator(null, required));
+    public FormView addEntryEmail(String id, String label, String hint, boolean optional) {
+        EntryTextView v = addEntryText(id, label, hint, new EmailValidator(null, optional));
         v.getTextView().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         return this;
     }
 
-    public FormView addEntryName(String id, String label, String hint, boolean required) {
-        EntryTextView v = addEntryText(id, label, hint, new NameValidator(null, required));
+    public FormView addEntryName(String id, String label, String hint, boolean optional) {
+        EntryTextView v = addEntryText(id, label, hint, new NameValidator(null, optional));
         v.getTextView().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
         return this;
     }
 
-    public FormView addEntryInteger(String id, String label, String hint, boolean required) {
-        EntryTextView v = addEntryText(id, label, hint, new IntegerValidator(null, required));
+    public FormView addEntryInteger(String id, String label, String hint, boolean optional) {
+        EntryTextView v = addEntryText(id, label, hint, new IntegerValidator(null, optional));
         v.getTextView().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
         return this;
     }
 
-    public FormView addEntryDecimal(String id, String label, String hint, boolean required) {
-        EntryTextView v = addEntryText(id, label, hint, new DecimalValidator(null, required));
+    public FormView addEntryDecimal(String id, String label, String hint, boolean optional) {
+        EntryTextView v = addEntryText(id, label, hint, new DecimalValidator(null, optional));
         v.getTextView().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        return this;
+    }
+
+    public FormView addEntryToggle(String id, String label, boolean checked) {
+        EntryToggleView v = new EntryToggleView(getContext());
+        v.setChecked(checked);
+        v.setLabel(label);
+        mEntries.put(id, v);
+        mEntryList.add(v);
+        addView(v);
         return this;
     }
 
@@ -166,5 +176,8 @@ public class FormView extends LinearLayout {
 
     public void validate() {
         mValidator.validate();
+        if (mValidator.getResult() != Validator.RESULT_OK) {
+            mValidator.getView().requestFocus();
+        }
     }
 }

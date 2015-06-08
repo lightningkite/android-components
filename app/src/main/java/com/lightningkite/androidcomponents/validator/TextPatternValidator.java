@@ -18,13 +18,13 @@ public class TextPatternValidator extends TextValidator {
     }
 
     @Override
-    public boolean validate() {
-        if (!super.validate()) return false;
-        if (!mPattern.matcher(mView.getText()).matches()) {
+    public void validate(String text) {
+        super.validate(text);
+        if (mResult != RESULT_OK) return;
+        if (text.length() > 0 && !mPattern.matcher(text).matches()) {
             result(RESULT_INVALID);
-            return false;
+            return;
         }
         result(RESULT_OK);
-        return true;
     }
 }

@@ -19,4 +19,6 @@ public interface BigViewContainer {
     void onGoTo(int id, Class<? extends BigView> bigViewClass, Bundle arguments);
 
     void onGoTo(int id, Class<? extends BigView> bigViewClass, Bundle arguments, int requestCode);
+
+    void onStartIntentForResult(int id, Intent intent, int requestCode);
 }
