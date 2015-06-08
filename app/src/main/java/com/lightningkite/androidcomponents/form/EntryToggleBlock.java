@@ -13,41 +13,35 @@ import com.lightningkite.androidcomponents.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 /**
  * Created by jivie on 6/8/15.
  */
-public class EntryToggleView extends FrameLayout implements FormEntry {
+public class EntryToggleBlock extends FrameLayout implements FormEntry {
 
     @InjectView(R.id.entry_toggle_button)
     ToggleButton mToggleButton;
 
+    @Optional
     @InjectView(R.id.entry_toggle_label)
-    TextView mLabelView;
+    TextView mLabelTextView;
 
-    public EntryToggleView(Context context) {
+    public EntryToggleBlock(Context context) {
         super(context);
         init();
     }
 
-    public EntryToggleView(Context context, AttributeSet attrs) {
+    public EntryToggleBlock(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.EntryToggleView,
+                R.styleable.EntryToggleBlock,
                 0, 0);
-        mLabelView.setText(a.getString(R.styleable.EntryToggleView_labelText));
-    }
-
-    public EntryToggleView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-        TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.EntryToggleView,
-                0, 0);
-        mLabelView.setText(a.getString(R.styleable.EntryToggleView_labelText));
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(a.getString(R.styleable.EntryToggleBlock_labelText));
+        }
     }
 
     private void init() {
@@ -73,7 +67,9 @@ public class EntryToggleView extends FrameLayout implements FormEntry {
     }
 
     public void setLabel(String label) {
-        mLabelView.setText(label);
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(label);
+        }
     }
 
     public boolean isChecked() {

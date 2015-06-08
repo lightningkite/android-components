@@ -21,13 +21,17 @@ import java.util.GregorianCalendar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 /**
  * Created by jivie on 5/7/15.
  */
-public class EntryDateView extends FrameLayout implements DatePickerDialog.OnDateSetListener, FormEntry {
+public class EntryDateBlock extends FrameLayout implements DatePickerDialog.OnDateSetListener, FormEntry {
 
     private boolean mEditable = true;
+    @Optional
+    @InjectView(R.id.entry_select_label)
+    TextView mLabelTextView;
     @InjectView(R.id.entry_date_day_of_month)
     TextView mDayOfMonth;
     @InjectView(R.id.entry_date_day_of_week)
@@ -37,19 +41,22 @@ public class EntryDateView extends FrameLayout implements DatePickerDialog.OnDat
 
     private Date mDate = new Date();
 
-    public EntryDateView(Context context) {
+    public EntryDateBlock(Context context) {
         super(context);
         init();
     }
 
-    public EntryDateView(Context context, AttributeSet attrs) {
+    public EntryDateBlock(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.EntryDateView,
+                R.styleable.EntryDateBlock,
                 0, 0);
-        mEditable = a.getBoolean(R.styleable.EntryDateView_editable, true);
+        mEditable = a.getBoolean(R.styleable.EntryDateBlock_editable, true);
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(a.getString(R.styleable.EntryDateBlock_labelText));
+        }
     }
 
     private void init() {
@@ -67,7 +74,7 @@ public class EntryDateView extends FrameLayout implements DatePickerDialog.OnDat
             cal.setTime(mDate);
             DatePickerDialog dialog = new DatePickerDialog(
                     getContext(),
-                    EntryDateView.this,
+                    EntryDateBlock.this,
                     cal.get(GregorianCalendar.YEAR),
                     cal.get(GregorianCalendar.MONTH),
                     cal.get(GregorianCalendar.DAY_OF_MONTH)
@@ -80,6 +87,12 @@ public class EntryDateView extends FrameLayout implements DatePickerDialog.OnDat
     private static final SimpleDateFormat DAY_OF_WEEK = new SimpleDateFormat("EEEE");
     private static final SimpleDateFormat MONTH = new SimpleDateFormat("MMMM");
     private static final DateFormat TIME = SimpleDateFormat.getTimeInstance();
+
+    public void setLabel(String label) {
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(label);
+        }
+    }
 
     public void setDate(Date date) {
         mDate = date;

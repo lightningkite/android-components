@@ -20,11 +20,13 @@ import com.lightningkite.androidcomponents.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 /**
  * Created by jivie on 5/7/15.
  */
-public class EntryTextView extends FrameLayout implements FormEntry {
+public class EntryTextBlock extends FrameLayout implements FormEntry {
+    @Optional
     @InjectView(R.id.entry_text_label)
     TextView mLabelTextView;
     @InjectView(R.id.entry_text_edit)
@@ -39,7 +41,7 @@ public class EntryTextView extends FrameLayout implements FormEntry {
         this.mDoneListener = mDoneListener;
     }
 
-    public EntryTextView(Context context) {
+    public EntryTextBlock(Context context) {
         super(context);
         init();
         mTextView.setInputType(InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE);
@@ -47,19 +49,21 @@ public class EntryTextView extends FrameLayout implements FormEntry {
         mTextView.setImeOptions(EditorInfo.IME_ACTION_NEXT);
     }
 
-    public EntryTextView(Context context, AttributeSet attrs) {
+    public EntryTextBlock(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.EntryTextView,
+                R.styleable.EntryTextBlock,
                 0, 0);
-        mLabelTextView.setText(a.getString(R.styleable.EntryTextView_labelText));
-        mTextView.setHint(a.getString(R.styleable.EntryTextView_hintText));
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(a.getString(R.styleable.EntryTextBlock_labelText));
+        }
+        mTextView.setHint(a.getString(R.styleable.EntryTextBlock_hintText));
         if (!isInEditMode()) {
             int inputMethod = attrs.getAttributeIntValue("http://schemas.android.com/apk/res/android", "inputType", InputType.TYPE_TEXT_FLAG_CAP_WORDS);
             int imeOptions = attrs.getAttributeIntValue("http://schemas.android.com/apk/res/android", "imeOptions", EditorInfo.IME_ACTION_NEXT);
-            mTextView.setInputType(a.getBoolean(R.styleable.EntryTextView_editable, true) ? inputMethod : InputType.TYPE_NULL);
+            mTextView.setInputType(a.getBoolean(R.styleable.EntryTextBlock_editable, true) ? inputMethod : InputType.TYPE_NULL);
             mTextView.setImeOptions(imeOptions);
         }
     }
@@ -71,14 +75,14 @@ public class EntryTextView extends FrameLayout implements FormEntry {
         mTextView.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Log.d(EntryTextView.class.getName(), String.valueOf(KeyEvent.FLAG_EDITOR_ACTION));
+                Log.d(EntryTextBlock.class.getName(), String.valueOf(KeyEvent.FLAG_EDITOR_ACTION));
                 if (event != null) {
-                    Log.d(EntryTextView.class.getName(), String.valueOf(event.getKeyCode()));
-                    Log.d(EntryTextView.class.getName(), String.valueOf(KeyEvent.FLAG_EDITOR_ACTION));
+                    Log.d(EntryTextBlock.class.getName(), String.valueOf(event.getKeyCode()));
+                    Log.d(EntryTextBlock.class.getName(), String.valueOf(KeyEvent.FLAG_EDITOR_ACTION));
                     if (event.getKeyCode() == KeyEvent.FLAG_EDITOR_ACTION) {
                         if (mDoneListener != null) {
-                            mDoneListener.onDone(EntryTextView.this);
-                            Log.d(EntryTextView.class.getName(), "DONE");
+                            mDoneListener.onDone(EntryTextBlock.this);
+                            Log.d(EntryTextBlock.class.getName(), "DONE");
                             return true;
                         }
                     }
@@ -118,7 +122,9 @@ public class EntryTextView extends FrameLayout implements FormEntry {
     }
 
     public void setLabel(String label) {
-        mLabelTextView.setText(label);
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(label);
+        }
     }
 
     public void setHint(String hint) {
@@ -183,6 +189,6 @@ public class EntryTextView extends FrameLayout implements FormEntry {
     }
 
     public interface DoneListener {
-        void onDone(EntryTextView tv);
+        void onDone(EntryTextBlock tv);
     }
 }

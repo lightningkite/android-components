@@ -15,13 +15,15 @@ import com.lightningkite.androidcomponents.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 /**
  * Created by jivie on 5/7/15.
  */
-public class EntrySelectView extends FrameLayout implements FormEntry {
+public class EntrySelectBlock extends FrameLayout implements FormEntry {
     public static final String DATA_TEXT = "text";
     public static final String DATA_ID = "id";
+    @Optional
     @InjectView(R.id.entry_select_label)
     TextView mLabelTextView;
     @InjectView(R.id.entry_select_text)
@@ -31,22 +33,24 @@ public class EntrySelectView extends FrameLayout implements FormEntry {
     private EntrySelectListener mListener;
     private boolean mEditable;
 
-    public EntrySelectView(Context context) {
+    public EntrySelectBlock(Context context) {
         super(context);
         init();
     }
 
-    public EntrySelectView(Context context, AttributeSet attrs) {
+    public EntrySelectBlock(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.EntrySelectView,
+                R.styleable.EntrySelectBlock,
                 0, 0);
-        mLabelTextView.setText(a.getString(R.styleable.EntrySelectView_labelText));
-        mTextView.setHint(a.getString(R.styleable.EntrySelectView_hintText));
-        mIconView.setImageDrawable(a.getDrawable(R.styleable.EntrySelectView_selectIcon));
-        mEditable = a.getBoolean(R.styleable.EntrySelectView_editable, true);
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(a.getString(R.styleable.EntrySelectBlock_labelText));
+        }
+        mTextView.setHint(a.getString(R.styleable.EntrySelectBlock_hintText));
+        mIconView.setImageDrawable(a.getDrawable(R.styleable.EntrySelectBlock_selectIcon));
+        mEditable = a.getBoolean(R.styleable.EntrySelectBlock_editable, true);
     }
 
     private void init() {
@@ -55,6 +59,12 @@ public class EntrySelectView extends FrameLayout implements FormEntry {
         mTextView.setSaveEnabled(false);
         mTextView.setOnClickListener(mClickListener);
         mIconView.setOnClickListener(mClickListener);
+    }
+
+    public void setLabel(String label) {
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(label);
+        }
     }
 
     public void setText(String text) {
@@ -69,7 +79,7 @@ public class EntrySelectView extends FrameLayout implements FormEntry {
         @Override
         public void onClick(View v) {
             if (mListener != null && mEditable) {
-                mListener.onSelect(EntrySelectView.this);
+                mListener.onSelect(EntrySelectBlock.this);
             }
         }
     };
@@ -102,7 +112,7 @@ public class EntrySelectView extends FrameLayout implements FormEntry {
     }
 
     public interface EntrySelectListener {
-        void onSelect(EntrySelectView v);
+        void onSelect(EntrySelectBlock v);
     }
 
     private long mSelectedId = -1;
@@ -119,8 +129,8 @@ public class EntrySelectView extends FrameLayout implements FormEntry {
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
         bundle.putParcelable("instanceState", super.onSaveInstanceState());
-        bundle.putString("mTextView.text", mTextView.getText().toString());
-        bundle.putLong("mSelectedId", mSelectedId);
+        bundle.putString(DATA_TEXT, mTextView.getText().toString());
+        bundle.putLong(DATA_ID, mSelectedId);
         return bundle;
     }
 
@@ -129,8 +139,8 @@ public class EntrySelectView extends FrameLayout implements FormEntry {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
             super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
-            mTextView.setText(bundle.getString("mTextView.text"));
-            mSelectedId = bundle.getLong("mSelectedId");
+            mTextView.setText(bundle.getString(DATA_TEXT));
+            mSelectedId = bundle.getLong(DATA_ID);
         }
     }
 }

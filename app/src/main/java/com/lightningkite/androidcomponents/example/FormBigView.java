@@ -1,10 +1,13 @@
 package com.lightningkite.androidcomponents.example;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.lightningkite.androidcomponents.R;
 import com.lightningkite.androidcomponents.bigview.BigView;
 import com.lightningkite.androidcomponents.bigview.BigViewContainer;
+import com.lightningkite.androidcomponents.form.EntrySelectBlock;
 import com.lightningkite.androidcomponents.form.FormView;
 
 import butterknife.ButterKnife;
@@ -27,12 +30,33 @@ public class FormBigView extends BigView {
 
         mFormView
                 .setDividerResource(R.layout.view_horizontal_line)
-                .addEntryEmail("email", "Email", "Enter your email", false)
-                .addEntryPassword("password", "Password", "Enter your password", 8)
-                .addEntryText("fav_color", "Favorite Color", "Enter your favorite color", false)
-                .addEntryInteger("lucky_num", "Lucky Number", "Enter your lucky number", false)
-                .addEntryDecimal("miles", "Miles", "Miles traveled (optional)", true)
-                .addEntryToggle("roundtrip", "Round Trip", true)
+                .addTextEmail("email", "Email", "Enter your email", false)
+                .addTextPassword("password", "Password", "Enter your password", 8)
+                .addText("fav_color", "Favorite Color", "Enter your favorite color", false)
+                .addTextInteger("lucky_num", "Lucky Number", "Enter your lucky number", false)
+                .addTextDecimal("miles", "Miles", "Miles traveled (optional)", true)
+                .addToggle("roundtrip", "Round Trip", true)
+                .addSelect("testSelect", "Test Select", new EntrySelectBlock.EntrySelectListener() {
+                    @Override
+                    public void onSelect(EntrySelectBlock v) {
+                        Log.d("FormBigView", "Test Select hit!");
+                    }
+                }, true)
+                .addSpinner("fav_fruit",
+                        "Favorite Fruit",
+                        new ArrayAdapter<>(
+                                getContext(),
+                                R.layout.row_text,
+                                new String[]{
+                                        "Apple",
+                                        "Pear",
+                                        "Orange",
+                                        "Banana",
+                                        "Grapes",
+                                        "Watermelon"
+                                }
+                        )
+                )
                 .start();
         mFormView.focusOnFirst();
     }

@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SpinnerAdapter;
 
 import com.lightningkite.androidcomponents.validator.DecimalValidator;
 import com.lightningkite.androidcomponents.validator.EmailValidator;
@@ -68,68 +69,97 @@ public class FormView extends LinearLayout {
         mDefaultResultListener = defaultResultListener;
     }
 
-    private EntryTextView addEntryText(String id, String label, String hint, TextValidator validator) {
-        EntryTextView view = new EntryTextView(getContext());
-        view.setLabel(label);
-        view.setHint(hint);
-        addView(view);
+    private EntryTextBlock addText(String id, String label, String hint, TextValidator validator) {
+        EntryTextBlock v = new EntryTextBlock(getContext());
+        v.setLabel(label);
+        v.setHint(hint);
 
-        validator.setTextView(view.getTextView());
-        validator.setListener(mDefaultResultListener);
-        mValidator.add(validator);
-
-        mEntries.put(id, view);
-        mEntryList.add(view);
-
-        if (mDividerResource != -1) {
-            inflate(getContext(), mDividerResource, this);
+        if (validator != null) {
+            validator.setTextView(v.getTextView());
+            validator.setListener(mDefaultResultListener);
+            mValidator.add(validator);
         }
 
-        return view;
+        addBlock(id, v, v);
+
+        return v;
     }
 
-    public FormView addEntryText(String id, String label, String hint, boolean optional) {
-        addEntryText(id, label, hint, new TextValidator(null, optional));
+    public FormView addText(String id, String label, String hint, boolean optional) {
+        addText(id, label, hint, new TextValidator(null, optional));
         return this;
     }
 
-    public FormView addEntryPassword(String id, String label, String hint, int minLength) {
-        EntryTextView v = addEntryText(id, label, hint, new PasswordValidator(null, minLength));
+    public FormView addTextPassword(String id, String label, String hint, int minLength) {
+        EntryTextBlock v = addText(id, label, hint, new PasswordValidator(null, minLength));
         v.getTextView().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         return this;
     }
 
-    public FormView addEntryEmail(String id, String label, String hint, boolean optional) {
-        EntryTextView v = addEntryText(id, label, hint, new EmailValidator(null, optional));
+    public FormView addTextEmail(String id, String label, String hint, boolean optional) {
+        EntryTextBlock v = addText(id, label, hint, new EmailValidator(null, optional));
         v.getTextView().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         return this;
     }
 
-    public FormView addEntryName(String id, String label, String hint, boolean optional) {
-        EntryTextView v = addEntryText(id, label, hint, new NameValidator(null, optional));
+    public FormView addTextName(String id, String label, String hint, boolean optional) {
+        EntryTextBlock v = addText(id, label, hint, new NameValidator(null, optional));
         v.getTextView().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
         return this;
     }
 
-    public FormView addEntryInteger(String id, String label, String hint, boolean optional) {
-        EntryTextView v = addEntryText(id, label, hint, new IntegerValidator(null, optional));
-        v.getTextView().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+    public FormView addTextInteger(String id, String label, String hint, boolean optional) {
+        EntryTextBlock v = addText(id, label, hint, new IntegerValidator(null, optional));
+        v.getTextView().setInputType(InputType.TYPE_CLASS_NUMBER);
         return this;
     }
 
-    public FormView addEntryDecimal(String id, String label, String hint, boolean optional) {
-        EntryTextView v = addEntryText(id, label, hint, new DecimalValidator(null, optional));
+    public FormView addTextDecimal(String id, String label, String hint, boolean optional) {
+        EntryTextBlock v = addText(id, label, hint, new DecimalValidator(null, optional));
         v.getTextView().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         return this;
     }
 
-    public FormView addEntryToggle(String id, String label, boolean checked) {
-        EntryToggleView v = new EntryToggleView(getContext());
+    public FormView addToggle(String id, String label, boolean checked) {
+        EntryToggleBlock v = new EntryToggleBlock(getContext());
         v.setChecked(checked);
         v.setLabel(label);
-        mEntries.put(id, v);
-        mEntryList.add(v);
-        addView(v);
+
+        addBlock(id, v, v);
+
+        return this;
+    }
+
+    public FormView addSelect(String id, String label, EntrySelectBlock.EntrySelectListener listener, boolean optional) {
+        final EntrySelectBlock v = new EntrySelectBlock(getContext());
+        v.setSelectListener(listener);
+        v.setLabel(label);
+
+        if (!optional) {
+            mValidator.add(new Validator() {
+                @Override
+                public void validate() {
+                    super.validate();
+                    if (mResult != RESULT_OK) return;
+                    if (v.getSelectedId() == -1) {
+                        result(1, v);
+                    }
+                }
+            });
+        }
+
+        addBlock(id, v, v);
+
+        return this;
+    }
+
+    public FormView addSpinner(String id, String label, SpinnerAdapter adapter) {
+        final EntrySpinnerBlock v = new EntrySpinnerBlock(getContext());
+        v.setAdapter(adapter);
+        v.setLabel(label);
+
+        addBlock(id, v, v);
+
         return this;
     }
 
@@ -140,6 +170,25 @@ public class FormView extends LinearLayout {
 
     public void focusOnFirst() {
         mEntryList.get(0).focus();
+    }
+
+    public void setData(String id, Object data) {
+        mEntries.get(id).setData(data);
+    }
+
+    public Object getData(String id) {
+        return mEntries.get(id).getData();
+    }
+
+
+    protected void addBlock(String id, View view, FormEntry block) {
+        mEntries.put(id, block);
+        mEntryList.add(block);
+        addView(view);
+
+        if (mDividerResource != -1) {
+            inflate(getContext(), mDividerResource, this);
+        }
     }
 
     @Override
