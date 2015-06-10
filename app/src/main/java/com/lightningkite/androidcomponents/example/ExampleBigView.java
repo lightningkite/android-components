@@ -14,6 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
+ * A very simple example of a BigView.
  * Created by jivie on 6/2/15.
  */
 public class ExampleBigView extends BigView {

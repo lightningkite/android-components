@@ -15,6 +15,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
+ * An example BigView demonstrating the FormView, which automatically creates a form.
  * Created by jivie on 6/2/15.
  */
 public class FormBigView extends BigView {

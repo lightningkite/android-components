@@ -6,6 +6,9 @@ import android.os.Bundle;
 
 /**
  * A simple implementation of BigViewContainer.
+ * This activity contains only one view, and going to other activities is supported through the
+ * creation of an additional instance of this class.
+ * This class must be exted to define the default bigview to use if none is specified.
  * Created by jivie on 6/2/15.
  */
 public abstract class BasicBVCActivity extends Activity implements BigViewContainer {
@@ -13,8 +16,14 @@ public abstract class BasicBVCActivity extends Activity implements BigViewContai
     private static final String EXTRA_BIGVIEW_NAME = "BasicBVCActivity.name";
     public BigView mView;
 
+    /**
+     * @return The default BigView class to use if none is specified.
+     */
     protected abstract Class<? extends BigView> getDefaultViewClass();
 
+    /**
+     * @return The default BigViewContainer class to use in going to new activities.
+     */
     protected abstract Class<? extends BasicBVCActivity> getBVCClass();
 
     protected void overridePendingTransition() {

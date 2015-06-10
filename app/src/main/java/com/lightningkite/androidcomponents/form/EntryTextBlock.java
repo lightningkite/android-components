@@ -23,6 +23,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 /**
+ * A form block that holds a text entry.
  * Created by jivie on 5/7/15.
  */
 public class EntryTextBlock extends FrameLayout implements FormEntry {

@@ -17,6 +17,13 @@ public class Fonts {
 
     static private Map<String, Typeface> typefaceMap = new HashMap<>();
 
+    /**
+     * Loads a TTF font or returns it if already loaded.
+     *
+     * @param context      Context to use for loading.
+     * @param resourceName Filename of the font without the ".ttf".
+     * @return The typeface generated from the TTF file.
+     */
     static public Typeface getTypeface(@NonNull Context context, String resourceName) {
         if (resourceName == null) {
             Log.w("Fonts", "Input is null; returning default typeface.");

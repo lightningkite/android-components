@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 /**
+ * Used for selecting which activity the user wants to go to.
  * Created by jivie on 6/3/15.
  */
 public class SelectorBigView extends BigView implements AdapterView.OnItemClickListener {

@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.lightningkite.androidcomponents.R;
 
+/**
+ * A TextView that can use a custom font.
+ */
 public class FontTextView extends TextView {
     public FontTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

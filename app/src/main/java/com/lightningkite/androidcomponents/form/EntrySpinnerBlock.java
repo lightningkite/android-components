@@ -15,6 +15,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 /**
+ * A form block that holds a spinner.
  * Created by jivie on 6/8/15.
  */
 public class EntrySpinnerBlock extends FrameLayout implements FormEntry {

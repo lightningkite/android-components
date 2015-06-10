@@ -8,7 +8,7 @@ import android.os.Bundle;
  * Created by jivie on 6/2/15.
  */
 public class BigViewUtils {
-    public static BigView make(String bigViewClassName, BigViewContainer container, Bundle arguments, int id) {
+    static BigView make(String bigViewClassName, BigViewContainer container, Bundle arguments, int id) {
         try {
             return make((Class<? extends BigView>) Class.forName(bigViewClassName), container, arguments, id);
         } catch (Exception e) {
@@ -17,7 +17,7 @@ public class BigViewUtils {
         }
     }
 
-    public static BigView make(Class<? extends BigView> bigViewClass, BigViewContainer container, Bundle arguments, int id) {
+    static BigView make(Class<? extends BigView> bigViewClass, BigViewContainer container, Bundle arguments, int id) {
         try {
             return bigViewClass.getConstructor(BigViewContainer.class, Bundle.class, int.class).newInstance(container, arguments, id);
         } catch (Exception e) {

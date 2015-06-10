@@ -24,6 +24,9 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 /**
+ * A form block that represents a date.
+ * Tapping opens a date picker.
+ *
  * Created by jivie on 5/7/15.
  */
 public class EntryDateBlock extends FrameLayout implements DatePickerDialog.OnDateSetListener, FormEntry {

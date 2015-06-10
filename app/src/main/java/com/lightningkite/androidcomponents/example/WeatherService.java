@@ -7,6 +7,7 @@ import retrofit.http.GET;
 import retrofit.http.Query;
 
 /**
+ * An example Retrofit interface.
  * Created by jivie on 6/3/15.
  */
 public interface WeatherService {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.FrameLayout;
 
 /**
+ * Contains a full screen of components, much like a fragment or an activity.
  * Created by jivie on 6/2/15.
  */
 public class BigView extends FrameLayout {
@@ -14,6 +15,13 @@ public class BigView extends FrameLayout {
     protected final Activity mActivity;
     private int mId;
 
+    /**
+     * Creates the new BigView.  This function is called by the BigViewContainer when goTo is called.
+     *
+     * @param container The container it belongs to.
+     * @param arguments A bundle with arguments for this view.
+     * @param id        An integer ID so the BigView knows which subview called a function like goTo.
+     */
     public BigView(BigViewContainer container, Bundle arguments, int id) {
         super(container.getActivity());
         mContainer = container;

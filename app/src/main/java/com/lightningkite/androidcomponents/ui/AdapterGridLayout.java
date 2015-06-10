@@ -10,6 +10,7 @@ import android.widget.ListAdapter;
 import java.util.LinkedList;
 
 /**
+ * A grid layout that can use an adapter.
  * Created by Joseph on 3/9/2015.
  */
 public class AdapterGridLayout extends GridLayout {

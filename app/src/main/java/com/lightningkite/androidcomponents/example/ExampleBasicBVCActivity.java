@@ -5,6 +5,7 @@ import com.lightningkite.androidcomponents.bigview.BasicBVCActivity;
 import com.lightningkite.androidcomponents.bigview.BigView;
 
 /**
+ * An example implementation of BasicBVCActivity.
  * Created by jivie on 6/2/15.
  */
 public class ExampleBasicBVCActivity extends BasicBVCActivity {

@@ -6,6 +6,7 @@ import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 
 /**
+ * An animation which animates the height of a view inside a vertical linear layout.
  * Created by Joseph on 2/25/2015.
  */
 public class LinearLayoutHeightAnimation extends Animation {

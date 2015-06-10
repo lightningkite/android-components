@@ -8,6 +8,9 @@ import android.widget.EditText;
 
 import com.lightningkite.androidcomponents.R;
 
+/**
+ * An EditText that can use a custom font.
+ */
 public class FontEditText extends EditText {
     public FontEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

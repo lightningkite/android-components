@@ -8,6 +8,8 @@ import co.uk.rushorm.core.RushObject;
 import co.uk.rushorm.core.annotations.RushList;
 
 /**
+ * An example Rush object model for the OpenWeather API.
+ * Note the use of the @RushList annotation, and the @SerializedName annotation.
  * Created by jivie on 6/3/15.
  */
 public class CurrentWeather extends RushObject {

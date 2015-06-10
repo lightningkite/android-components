@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Can automatically create forms for you!
  * Created by jivie on 6/2/15.
  */
 public class FormView extends LinearLayout {

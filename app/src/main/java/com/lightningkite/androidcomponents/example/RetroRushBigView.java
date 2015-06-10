@@ -16,6 +16,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
+ * An example BigView that demonstrates how Retrofit and RushORM work together.
  * Created by jivie on 6/3/15.
  */
 public class RetroRushBigView extends BigView {

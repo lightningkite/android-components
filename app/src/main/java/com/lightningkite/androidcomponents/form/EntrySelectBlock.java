@@ -18,6 +18,9 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 /**
+ * A very simple form block that just has a listener that is called when the user taps it.
+ * IMPORTANT: This is meant to call a class to select somthing, as it shows a piece of text and
+ * stores a long id.  Think of it as an advanced Spinner.
  * Created by jivie on 5/7/15.
  */
 public class EntrySelectBlock extends FrameLayout implements FormEntry {

@@ -16,6 +16,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 /**
+ * A form block that holds a toggle button.
  * Created by jivie on 6/8/15.
  */
 public class EntryToggleBlock extends FrameLayout implements FormEntry {
