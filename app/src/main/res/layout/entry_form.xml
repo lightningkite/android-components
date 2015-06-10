@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="4dp"
+    android:background="@drawable/border_box_black"
     android:orientation="vertical">
 
     <TextView
@@ -11,7 +13,10 @@
         android:layout_height="wrap_content"
         android:background="#8080FF"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="8dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="2dp"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         tools:text="Label" />

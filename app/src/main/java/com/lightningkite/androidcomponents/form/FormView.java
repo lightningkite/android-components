@@ -41,7 +41,7 @@ import butterknife.Optional;
  * Can automatically create forms for you!
  * Created by jivie on 6/2/15.
  */
-public class FormView extends FrameLayout {
+public class FormView extends FrameLayout implements FormEntry {
 
     private HashMap<String, FormEntry> mEntries = new HashMap<>();
     private ArrayList<FormEntry> mEntryList = new ArrayList<>();
@@ -99,6 +99,10 @@ public class FormView extends FrameLayout {
     private void init() {
         inflate(getContext(), mLayoutRes, this);
         ButterKnife.inject(this);
+    }
+
+    private void setLabel(String label) {
+        mLabelTextView.setText(label);
     }
 
     //-----------TEXT----------------
@@ -202,6 +206,12 @@ public class FormView extends FrameLayout {
         return this;
     }
 
+    public FormView addForm(String id, String label, FormView formView) {
+        formView.setLabel(label);
+        addBlock(id, formView, formView);
+        return this;
+    }
+
     public FormView start() {
         mEntryList.get(mEntryList.size() - 1).notifyLast();
         return this;
@@ -291,19 +301,15 @@ public class FormView extends FrameLayout {
         return total;
     }
 
-    private String getFieldName(String prepend, Field field) {
-        return prepend + "." + field.getName();
-    }
-
     @SuppressWarnings("unchecked")
-    public FormView addFromModel(Class modelClass, @Nullable SpinnerAdapterFetcher fetcher, String prepend) {
+    public FormView addFromModel(Class modelClass, @Nullable SpinnerAdapterFetcher fetcher) {
         for (Field field : getOrderedFields(modelClass)) {
             if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
                 if (field.isAnnotationPresent(AutoFormIgnore.class)) continue;
                 boolean deep = false;
                 if (field.isAnnotationPresent(AutoFormDeep.class)) deep = true;
 
-                String name = getFieldName(prepend, field);
+                String name = field.getName();
                 String properName;
                 AutoFormDisplayName displayNameAnnotation = field.getAnnotation(AutoFormDisplayName.class);
                 if (displayNameAnnotation != null) {
@@ -340,7 +346,8 @@ public class FormView extends FrameLayout {
                     if (fetcher != null && (spinnerAdapter = fetcher.fetch(type)) != null) {
                         addSpinner(name, properName, spinnerAdapter);
                     } else if (deep) {
-                        addFromModel(type, fetcher, name);
+                        //addFromModel(type, fetcher, name);
+                        addForm(name, properName, new FormView(getContext()).addFromModel(type, fetcher));
                     }
                 }
 
@@ -349,30 +356,29 @@ public class FormView extends FrameLayout {
         return this;
     }
 
-    public void loadData(Object object, @Nullable SpinnerAdapterFetcher fetcher, String prepend) {
+    public void loadData(Object object, @Nullable SpinnerAdapterFetcher fetcher) {
         for (Field field : object.getClass().getDeclaredFields()) {
             if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
                 if (field.isAnnotationPresent(AutoFormIgnore.class)) continue;
                 boolean deep = false;
                 if (field.isAnnotationPresent(AutoFormDeep.class)) deep = true;
                 try {
-                    Object fieldData;
-                    fieldData = field.get(object);
-                    String name = getFieldName(prepend, field);
+                    Object value = field.get(object);
+                    String name = field.getName();
                     Class type = field.getType();
                     if (type == String.class) {
-                        mEntries.get(name).setData(fieldData);
+                        mEntries.get(name).setData(value);
                     } else if (type == Integer.class || type == Long.class) {
-                        mEntries.get(name).setData(String.valueOf(fieldData));
+                        mEntries.get(name).setData(String.valueOf(value));
                     } else if (type == Float.class || type == Double.class) {
-                        mEntries.get(name).setData(String.valueOf(fieldData));
+                        mEntries.get(name).setData(String.valueOf(value));
                     } else if (type == Boolean.class) {
-                        mEntries.get(name).setData(fieldData);
+                        mEntries.get(name).setData(value);
                     } else {
                         if (fetcher != null && fetcher.fetch(type) != null) {
-                            mEntries.get(name).setData(fetcher.getId(type, fieldData));
+                            mEntries.get(name).setData(fetcher.getId(type, value));
                         } else if (deep) {
-                            loadData(type, fetcher, name);
+                            ((FormView) mEntries.get(name)).loadData(value, fetcher);
                         }
                     }
                 } catch (IllegalAccessException e) {
@@ -382,14 +388,14 @@ public class FormView extends FrameLayout {
         }
     }
 
-    public void saveData(Object object, @Nullable SpinnerAdapterFetcher fetcher, String prepend) {
+    public void saveData(Object object, @Nullable SpinnerAdapterFetcher fetcher) {
         for (Field field : object.getClass().getDeclaredFields()) {
             if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
                 if (field.isAnnotationPresent(AutoFormIgnore.class)) continue;
                 boolean deep = false;
                 if (field.isAnnotationPresent(AutoFormDeep.class)) deep = true;
                 try {
-                    String name = getFieldName(prepend, field);
+                    String name = field.getName();
                     Object value = mEntries.get(name);
 
                     Class type = field.getType();
@@ -415,7 +421,7 @@ public class FormView extends FrameLayout {
                         if (fetcher != null && (spinnerAdapter = fetcher.fetch(type)) != null) {
                             field.set(object, spinnerAdapter.getItem((Integer) value));
                         } else if (deep) {
-                            saveData(type, fetcher, name);
+                            ((FormView) mEntries.get(name)).saveData(value, fetcher);
                         }
                     }
                 } catch (IllegalAccessException | ClassCastException e) {
@@ -466,5 +472,25 @@ public class FormView extends FrameLayout {
             builder.append(c);
         }
         return builder.toString();
+    }
+
+    @Override
+    public Object getData() {
+        return onSaveInstanceState();
+    }
+
+    @Override
+    public void setData(Object object) {
+        onRestoreInstanceState((Parcelable) object);
+    }
+
+    @Override
+    public void focus() {
+        focusOnFirst();
+    }
+
+    @Override
+    public void notifyLast() {
+
     }
 }

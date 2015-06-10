@@ -28,7 +28,7 @@ public class AutoformBigView extends BigView {
         ButterKnife.inject(this);
 
         mFormView
-                .addFromModel(User.class, null, "user")
+                .addFromModel(User.class, null)
                 .start();
         mFormView.focusOnFirst();
     }

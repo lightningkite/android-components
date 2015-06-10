@@ -27,7 +27,7 @@ public class GridFormBigView extends BigView {
         ButterKnife.inject(this);
 
         mFormView
-                .addFromModel(CurrentWeather.class, null, "currentWeather")
+                .addFromModel(CurrentWeather.class, null)
                 .start();
         mFormView.focusOnFirst();
     }
