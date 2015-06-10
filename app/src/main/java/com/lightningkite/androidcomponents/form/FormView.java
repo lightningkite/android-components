@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SpinnerAdapter;
@@ -24,6 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -236,14 +238,37 @@ public class FormView extends LinearLayout {
         }
     }
 
+    //REFLECTION
+
+    private List<Field> getOrderedFields(Class modelClass) {
+        SparseArray<Field> ordered = new SparseArray<>();
+        List<Field> total = new ArrayList<>();
+        for (Field field : modelClass.getDeclaredFields()) {
+            AutoFormPosition position = field.getAnnotation(AutoFormPosition.class);
+            if (position != null) {
+                ordered.put(position.value(), field);
+            } else {
+                total.add(field);
+            }
+        }
+        for (int i = 0; i < ordered.size(); i++) {
+            int key = ordered.keyAt(i);
+            if (key < total.size()) {
+                total.add(key, ordered.get(key));
+            } else {
+                total.add(ordered.get(key));
+            }
+        }
+        return total;
+    }
+
     private String getFieldName(String prepend, Field field) {
         return prepend + "." + field.getName();
     }
 
-    //REFLECTION
     @SuppressWarnings("unchecked")
     public FormView addFromModel(Class modelClass, @Nullable SpinnerAdapterFetcher fetcher, boolean deep, String prepend) {
-        for (Field field : modelClass.getDeclaredFields()) {
+        for (Field field : getOrderedFields(modelClass)) {
             if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
 
                 if (field.isAnnotationPresent(AutoFormIgnore.class)) continue;
