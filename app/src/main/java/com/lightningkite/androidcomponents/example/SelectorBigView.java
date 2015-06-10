@@ -30,6 +30,8 @@ public class SelectorBigView extends BigView implements AdapterView.OnItemClickL
         EXAMPLES.add(ExampleBigView.class);
         EXAMPLES.add(FormBigView.class);
         EXAMPLES.add(RetroRushBigView.class);
+        EXAMPLES.add(AutoformBigView.class);
+        EXAMPLES.add(MegaAutoformBigView.class);
     }
 
     private final MyAdapter mAdapter;

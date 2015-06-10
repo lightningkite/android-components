@@ -3,6 +3,7 @@ package com.lightningkite.androidcomponents.form;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,6 +20,8 @@ import com.lightningkite.androidcomponents.validator.PasswordValidator;
 import com.lightningkite.androidcomponents.validator.TextValidator;
 import com.lightningkite.androidcomponents.validator.Validator;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -195,6 +198,7 @@ public class FormView extends LinearLayout {
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
+        bundle.putParcelable("superstate", super.onSaveInstanceState());
         for (Map.Entry<String, FormEntry> entry : mEntries.entrySet()) {
             Object data = entry.getValue().getData();
             if (data instanceof Long) {
@@ -216,9 +220,10 @@ public class FormView extends LinearLayout {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(state);
         Bundle bundle = (Bundle) state;
+        super.onRestoreInstanceState(bundle.getParcelable("superstate"));
         for (String key : bundle.keySet()) {
+            if (key.equals("superstate")) continue;
             FormEntry entry = mEntries.get(key);
             entry.setData(bundle.get(key));
         }
@@ -229,5 +234,176 @@ public class FormView extends LinearLayout {
         if (mValidator.getResult() != Validator.RESULT_OK) {
             mValidator.getView().requestFocus();
         }
+    }
+
+    private String getFieldName(String prepend, Field field) {
+        return prepend + "." + field.getName();
+    }
+
+    //REFLECTION
+    @SuppressWarnings("unchecked")
+    public FormView addFromModel(Class modelClass, @Nullable SpinnerAdapterFetcher fetcher, boolean deep, String prepend) {
+        for (Field field : modelClass.getDeclaredFields()) {
+            if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
+
+                if (field.isAnnotationPresent(AutoFormIgnore.class)) continue;
+
+                String name = getFieldName(prepend, field);
+                String properName;
+                AutoFormDisplayName displayNameAnnotation = field.getAnnotation(AutoFormDisplayName.class);
+                if (displayNameAnnotation != null) {
+                    properName = displayNameAnnotation.value();
+                } else {
+                    properName = toProperName(field.getName());
+                }
+
+                Class type = field.getType();
+                if (type == String.class) {
+                    if (name.toLowerCase().contains("email")) {
+                        addTextEmail(name, properName, properName, true);
+                    } else if (name.toLowerCase().contains("name")) {
+                        addTextName(name, properName, properName, true);
+                    } else if (name.toLowerCase().contains("password")) {
+                        addTextPassword(name, properName, properName, 8);
+                    } else {
+                        addText(name, properName, properName, true);
+                    }
+                } else if (type == int.class || type == long.class) {
+                    addTextInteger(name, properName, properName, false);
+                } else if (type == Integer.class || type == Long.class) {
+                    addTextInteger(name, properName, properName, true);
+                } else if (type == Float.class || type == Double.class) {
+                    addTextDecimal(name, properName, properName, true);
+                } else if (type == float.class || type == double.class) {
+                    addTextDecimal(name, properName, properName, true);
+                } else if (type == boolean.class) {
+                    addToggle(name, properName, false);
+                } else if (type == Boolean.class) {
+                    addToggle(name, properName, true);
+                } else {
+                    SpinnerAdapter spinnerAdapter;
+                    if (fetcher != null && (spinnerAdapter = fetcher.fetch(type)) != null) {
+                        addSpinner(name, properName, spinnerAdapter);
+                    } else if (deep) {
+                        addFromModel(type, fetcher, true, name);
+                    }
+                }
+
+            }
+        }
+        return this;
+    }
+
+    public void loadData(Object object, @Nullable SpinnerAdapterFetcher fetcher, boolean deep, String prepend) {
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
+                try {
+                    Object fieldData;
+                    fieldData = field.get(object);
+                    String name = getFieldName(prepend, field);
+                    Class type = field.getType();
+                    if (type == String.class) {
+                        mEntries.get(name).setData(fieldData);
+                    } else if (type == Integer.class || type == Long.class) {
+                        mEntries.get(name).setData(String.valueOf(fieldData));
+                    } else if (type == Float.class || type == Double.class) {
+                        mEntries.get(name).setData(String.valueOf(fieldData));
+                    } else if (type == Boolean.class) {
+                        mEntries.get(name).setData(fieldData);
+                    } else {
+                        if (fetcher != null && fetcher.fetch(type) != null) {
+                            mEntries.get(name).setData(fetcher.getId(type, fieldData));
+                        } else if (deep) {
+                            loadData(type, fetcher, true, name);
+                        }
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void saveData(Object object, @Nullable SpinnerAdapterFetcher fetcher, boolean deep, String prepend) {
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
+                try {
+                    String name = getFieldName(prepend, field);
+                    Object value = mEntries.get(name);
+
+                    Class type = field.getType();
+                    if (type == String.class ||
+                            type == Integer.class ||
+                            type == Long.class ||
+                            type == Boolean.class ||
+                            type == Double.class ||
+                            type == Float.class) {
+                        field.set(object, value);
+                    } else if (type == int.class) {
+                        field.setInt(object, (Integer) value);
+                    } else if (type == long.class) {
+                        field.setLong(object, (Long) value);
+                    } else if (type == float.class) {
+                        field.setFloat(object, (Float) value);
+                    } else if (type == double.class) {
+                        field.setDouble(object, (Double) value);
+                    } else if (type == boolean.class) {
+                        field.setBoolean(object, (Boolean) value);
+                    } else {
+                        SpinnerAdapter spinnerAdapter;
+                        if (fetcher != null && (spinnerAdapter = fetcher.fetch(type)) != null) {
+                            field.set(object, spinnerAdapter.getItem((Integer) value));
+                        } else if (deep) {
+                            saveData(type, fetcher, true, name);
+                        }
+                    }
+                } catch (IllegalAccessException | ClassCastException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private String toProperName(String name) {
+        StringBuilder builder = new StringBuilder();
+        int camelCaseState = 0;
+        int underscoreState = 0;
+        boolean firstChar = true;
+        for (char c : name.toCharArray()) {
+            if (firstChar) {
+                firstChar = false;
+                if (c >= 'a' && c <= 'z') {
+                    builder.append((char) (c - 0x20));
+                    continue;
+                }
+            }
+            if (c == '_') {
+                builder.append(' ');
+                underscoreState = 1;
+                continue;
+            }
+            if (underscoreState == 1) {
+                if (c >= 'a' && c <= 'z') {
+                    builder.append((char) (c - 0x20));
+                    continue;
+                }
+                underscoreState = 0;
+            }
+            if (camelCaseState == 0) {
+                if (c >= 'a' && c <= 'z') {
+                    camelCaseState++;
+                } else {
+                    camelCaseState = 0;
+                }
+            } else if (camelCaseState == 1) {
+                if (c >= 'A' && c <= 'Z') {
+                    builder.append(' ');
+                } else {
+                    camelCaseState = 0;
+                }
+            }
+            builder.append(c);
+        }
+        return builder.toString();
     }
 }
