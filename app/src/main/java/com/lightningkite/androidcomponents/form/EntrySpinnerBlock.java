@@ -2,6 +2,7 @@ package com.lightningkite.androidcomponents.form;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
@@ -26,8 +27,27 @@ public class EntrySpinnerBlock extends FrameLayout implements FormEntry {
     @InjectView(R.id.entry_spinner_spinner)
     Spinner mSpinnerView;
 
+
+    static private int mDefaultLayoutRes = R.layout.entry_spinner;
+
+    public static int getDefaultLayoutRes() {
+        return mDefaultLayoutRes;
+    }
+
+    public static void setDefaultLayoutRes(int defaultLayoutRes) {
+        mDefaultLayoutRes = defaultLayoutRes;
+    }
+
+    private int mLayoutRes = mDefaultLayoutRes;
+
     public EntrySpinnerBlock(Context context) {
         super(context);
+        init();
+    }
+
+    public EntrySpinnerBlock(Context context, @LayoutRes int layout) {
+        super(context);
+        mLayoutRes = layout;
         init();
     }
 
@@ -44,7 +64,7 @@ public class EntrySpinnerBlock extends FrameLayout implements FormEntry {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.entry_spinner, this);
+        inflate(getContext(), mLayoutRes, this);
         ButterKnife.inject(this);
     }
 

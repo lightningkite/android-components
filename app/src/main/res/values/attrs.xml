@@ -38,6 +38,11 @@
         <attr name="labelText" />
     </declare-styleable>
 
+    <declare-styleable name="FormView">
+        <attr name="layout" />
+        <attr name="labelText" />
+    </declare-styleable>
+
     <declare-styleable name="FontTextView">
         <attr name="font" />
     </declare-styleable>

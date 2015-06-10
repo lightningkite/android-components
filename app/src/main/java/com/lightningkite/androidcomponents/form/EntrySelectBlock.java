@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,27 @@ public class EntrySelectBlock extends FrameLayout implements FormEntry {
     private EntrySelectListener mListener;
     private boolean mEditable;
 
+
+    static private int mDefaultLayoutRes = R.layout.entry_select;
+
+    public static int getDefaultLayoutRes() {
+        return mDefaultLayoutRes;
+    }
+
+    public static void setDefaultLayoutRes(int defaultLayoutRes) {
+        mDefaultLayoutRes = defaultLayoutRes;
+    }
+
+    private int mLayoutRes = mDefaultLayoutRes;
+
     public EntrySelectBlock(Context context) {
         super(context);
+        init();
+    }
+
+    public EntrySelectBlock(Context context, @LayoutRes int layout) {
+        super(context);
+        mLayoutRes = layout;
         init();
     }
 
@@ -57,7 +77,7 @@ public class EntrySelectBlock extends FrameLayout implements FormEntry {
     }
 
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.entry_select, this, true);
+        LayoutInflater.from(getContext()).inflate(mLayoutRes, this, true);
         ButterKnife.inject(this, this);
         mTextView.setSaveEnabled(false);
         mTextView.setOnClickListener(mClickListener);

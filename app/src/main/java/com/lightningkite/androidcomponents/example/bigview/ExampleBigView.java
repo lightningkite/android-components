@@ -1,4 +1,4 @@
-package com.lightningkite.androidcomponents.example;
+package com.lightningkite.androidcomponents.example.bigview;
 
 import android.os.Bundle;
 import android.widget.TextView;

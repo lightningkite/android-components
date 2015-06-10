@@ -1,4 +1,4 @@
-package com.lightningkite.androidcomponents.example;
+package com.lightningkite.androidcomponents.example.bigview;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +30,6 @@ public class FormBigView extends BigView {
         ButterKnife.inject(this);
 
         mFormView
-                .setDividerResource(R.layout.view_horizontal_line)
                 .addTextEmail("email", "Email", "Enter your email", false)
                 .addTextPassword("password", "Password", "Enter your password", 8)
                 .addText("fav_color", "Favorite Color", "Enter your favorite color", false)

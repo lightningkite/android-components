@@ -1,17 +1,22 @@
 package com.lightningkite.androidcomponents.form;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
+import com.lightningkite.androidcomponents.R;
 import com.lightningkite.androidcomponents.validator.DecimalValidator;
 import com.lightningkite.androidcomponents.validator.EmailValidator;
 import com.lightningkite.androidcomponents.validator.FormValidator;
@@ -28,11 +33,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
+
 /**
  * Can automatically create forms for you!
  * Created by jivie on 6/2/15.
  */
-public class FormView extends LinearLayout {
+public class FormView extends FrameLayout {
 
     private HashMap<String, FormEntry> mEntries = new HashMap<>();
     private ArrayList<FormEntry> mEntryList = new ArrayList<>();
@@ -44,28 +53,52 @@ public class FormView extends LinearLayout {
             view.setBackgroundColor(code == Validator.RESULT_OK ? 0x0 : 0x80FF0000);
         }
     };
-    private int mDividerResource = -1;
 
-    public int getDividerResource() {
-        return mDividerResource;
+    static private int mDefaultLayoutRes = R.layout.entry_form;
+
+    public static int getDefaultLayoutRes() {
+        return mDefaultLayoutRes;
     }
 
-    public FormView setDividerResource(int mDividerResource) {
-        this.mDividerResource = mDividerResource;
-        return this;
+    public static void setDefaultLayoutRes(int defaultLayoutRes) {
+        mDefaultLayoutRes = defaultLayoutRes;
     }
+
+    private int mLayoutRes = mDefaultLayoutRes;
+
+    @InjectView(R.id.form_layout)
+    ViewGroup mLayout;
+    @Optional
+    @InjectView(R.id.form_label)
+    TextView mLabelTextView;
 
     public FormView(Context context) {
         super(context);
-        setOrientation(VERTICAL);
+        init();
+    }
+
+    public FormView(Context context, @LayoutRes int layoutRes) {
+        super(context);
+        mLayoutRes = layoutRes;
+        init();
     }
 
     public FormView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.FormView,
+                0, 0);
+        mLayoutRes = a.getResourceId(R.styleable.FormView_layout, R.layout.entry_form);
+        init();
+        if (mLabelTextView != null) {
+            mLabelTextView.setText(a.getString(R.styleable.FormView_labelText));
+        }
     }
 
-    public FormView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    private void init() {
+        inflate(getContext(), mLayoutRes, this);
+        ButterKnife.inject(this);
     }
 
     //-----------TEXT----------------
@@ -190,11 +223,7 @@ public class FormView extends LinearLayout {
     protected void addBlock(String id, View view, FormEntry block) {
         mEntries.put(id, block);
         mEntryList.add(block);
-        addView(view);
-
-        if (mDividerResource != -1) {
-            inflate(getContext(), mDividerResource, this);
-        }
+        mLayout.addView(view);
     }
 
     @Override
@@ -267,11 +296,12 @@ public class FormView extends LinearLayout {
     }
 
     @SuppressWarnings("unchecked")
-    public FormView addFromModel(Class modelClass, @Nullable SpinnerAdapterFetcher fetcher, boolean deep, String prepend) {
+    public FormView addFromModel(Class modelClass, @Nullable SpinnerAdapterFetcher fetcher, String prepend) {
         for (Field field : getOrderedFields(modelClass)) {
             if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
-
                 if (field.isAnnotationPresent(AutoFormIgnore.class)) continue;
+                boolean deep = false;
+                if (field.isAnnotationPresent(AutoFormDeep.class)) deep = true;
 
                 String name = getFieldName(prepend, field);
                 String properName;
@@ -310,7 +340,7 @@ public class FormView extends LinearLayout {
                     if (fetcher != null && (spinnerAdapter = fetcher.fetch(type)) != null) {
                         addSpinner(name, properName, spinnerAdapter);
                     } else if (deep) {
-                        addFromModel(type, fetcher, true, name);
+                        addFromModel(type, fetcher, name);
                     }
                 }
 
@@ -319,9 +349,12 @@ public class FormView extends LinearLayout {
         return this;
     }
 
-    public void loadData(Object object, @Nullable SpinnerAdapterFetcher fetcher, boolean deep, String prepend) {
+    public void loadData(Object object, @Nullable SpinnerAdapterFetcher fetcher, String prepend) {
         for (Field field : object.getClass().getDeclaredFields()) {
             if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
+                if (field.isAnnotationPresent(AutoFormIgnore.class)) continue;
+                boolean deep = false;
+                if (field.isAnnotationPresent(AutoFormDeep.class)) deep = true;
                 try {
                     Object fieldData;
                     fieldData = field.get(object);
@@ -339,7 +372,7 @@ public class FormView extends LinearLayout {
                         if (fetcher != null && fetcher.fetch(type) != null) {
                             mEntries.get(name).setData(fetcher.getId(type, fieldData));
                         } else if (deep) {
-                            loadData(type, fetcher, true, name);
+                            loadData(type, fetcher, name);
                         }
                     }
                 } catch (IllegalAccessException e) {
@@ -349,9 +382,12 @@ public class FormView extends LinearLayout {
         }
     }
 
-    public void saveData(Object object, @Nullable SpinnerAdapterFetcher fetcher, boolean deep, String prepend) {
+    public void saveData(Object object, @Nullable SpinnerAdapterFetcher fetcher, String prepend) {
         for (Field field : object.getClass().getDeclaredFields()) {
             if ((field.getModifiers() & Modifier.PUBLIC) == Modifier.PUBLIC) {
+                if (field.isAnnotationPresent(AutoFormIgnore.class)) continue;
+                boolean deep = false;
+                if (field.isAnnotationPresent(AutoFormDeep.class)) deep = true;
                 try {
                     String name = getFieldName(prepend, field);
                     Object value = mEntries.get(name);
@@ -379,7 +415,7 @@ public class FormView extends LinearLayout {
                         if (fetcher != null && (spinnerAdapter = fetcher.fetch(type)) != null) {
                             field.set(object, spinnerAdapter.getItem((Integer) value));
                         } else if (deep) {
-                            saveData(type, fetcher, true, name);
+                            saveData(type, fetcher, name);
                         }
                     }
                 } catch (IllegalAccessException | ClassCastException e) {

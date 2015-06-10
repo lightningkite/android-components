@@ -1,4 +1,4 @@
-package com.lightningkite.androidcomponents.example;
+package com.lightningkite.androidcomponents.example.bigview;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.lightningkite.androidcomponents.R;
 import com.lightningkite.androidcomponents.bigview.BigView;
 import com.lightningkite.androidcomponents.bigview.BigViewContainer;
+import com.lightningkite.androidcomponents.example.WeatherAPIHelper;
 import com.lightningkite.androidcomponents.example.model.CurrentWeather;
 
 import butterknife.ButterKnife;

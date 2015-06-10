@@ -1,4 +1,4 @@
-package com.lightningkite.androidcomponents.example;
+package com.lightningkite.androidcomponents.example.bigview;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -32,6 +32,7 @@ public class SelectorBigView extends BigView implements AdapterView.OnItemClickL
         EXAMPLES.add(RetroRushBigView.class);
         EXAMPLES.add(AutoformBigView.class);
         EXAMPLES.add(MegaAutoformBigView.class);
+        EXAMPLES.add(GridFormBigView.class);
     }
 
     private final MyAdapter mAdapter;

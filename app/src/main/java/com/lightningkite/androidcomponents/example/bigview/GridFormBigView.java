@@ -1,4 +1,4 @@
-package com.lightningkite.androidcomponents.example;
+package com.lightningkite.androidcomponents.example.bigview;
 
 import android.os.Bundle;
 
@@ -13,23 +13,21 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * An example BigView demonstrating the FormView, which automatically creates a form.
- * Created by jivie on 6/2/15.
+ * Created by jivie on 6/10/15.
  */
-public class MegaAutoformBigView extends BigView {
+public class GridFormBigView extends BigView {
 
     @InjectView(R.id.form_form)
     FormView mFormView;
 
-    public MegaAutoformBigView(BigViewContainer container, Bundle arguments, int id) {
+    public GridFormBigView(BigViewContainer container, Bundle arguments, int id) {
         super(container, arguments, id);
 
-        inflate(mActivity, R.layout.bigview_form_example, this);
+        inflate(mActivity, R.layout.bigview_grid_form_example, this);
         ButterKnife.inject(this);
 
         mFormView
-                .setDividerResource(R.layout.view_horizontal_line)
-                .addFromModel(CurrentWeather.class, null, true, "currentWeather")
+                .addFromModel(CurrentWeather.class, null, "currentWeather")
                 .start();
         mFormView.focusOnFirst();
     }

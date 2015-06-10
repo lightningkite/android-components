@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -28,8 +29,26 @@ public class EntryToggleBlock extends FrameLayout implements FormEntry {
     @InjectView(R.id.entry_toggle_label)
     TextView mLabelTextView;
 
+    static private int mDefaultLayoutRes = R.layout.entry_toggle;
+
+    public static int getDefaultLayoutRes() {
+        return mDefaultLayoutRes;
+    }
+
+    public static void setDefaultLayoutRes(int defaultLayoutRes) {
+        mDefaultLayoutRes = defaultLayoutRes;
+    }
+
+    private int mLayoutRes = mDefaultLayoutRes;
+
     public EntryToggleBlock(Context context) {
         super(context);
+        init();
+    }
+
+    public EntryToggleBlock(Context context, @LayoutRes int layout) {
+        super(context);
+        mLayoutRes = layout;
         init();
     }
 
@@ -46,7 +65,7 @@ public class EntryToggleBlock extends FrameLayout implements FormEntry {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.entry_toggle, this);
+        inflate(getContext(), mLayoutRes, this);
         ButterKnife.inject(this);
     }
 

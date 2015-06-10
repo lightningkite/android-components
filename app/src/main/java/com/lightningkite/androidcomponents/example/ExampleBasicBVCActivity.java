@@ -3,6 +3,7 @@ package com.lightningkite.androidcomponents.example;
 import com.lightningkite.androidcomponents.R;
 import com.lightningkite.androidcomponents.bigview.BasicBVCActivity;
 import com.lightningkite.androidcomponents.bigview.BigView;
+import com.lightningkite.androidcomponents.example.bigview.SelectorBigView;
 
 /**
  * An example implementation of BasicBVCActivity.

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,19 @@ import butterknife.Optional;
  */
 public class EntryDateBlock extends FrameLayout implements DatePickerDialog.OnDateSetListener, FormEntry {
 
+
+    static private int mDefaultLayoutRes = R.layout.entry_date;
+
+    public static int getDefaultLayoutRes() {
+        return mDefaultLayoutRes;
+    }
+
+    public static void setDefaultLayoutRes(int defaultLayoutRes) {
+        mDefaultLayoutRes = defaultLayoutRes;
+    }
+
+    private int mLayoutRes = mDefaultLayoutRes;
+
     private boolean mEditable = true;
     @Optional
     @InjectView(R.id.entry_select_label)
@@ -49,6 +63,12 @@ public class EntryDateBlock extends FrameLayout implements DatePickerDialog.OnDa
         init();
     }
 
+    public EntryDateBlock(Context context, @LayoutRes int layout) {
+        super(context);
+        mLayoutRes = layout;
+        init();
+    }
+
     public EntryDateBlock(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -63,7 +83,7 @@ public class EntryDateBlock extends FrameLayout implements DatePickerDialog.OnDa
     }
 
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.entry_date, this, true);
+        LayoutInflater.from(getContext()).inflate(mLayoutRes, this, true);
         ButterKnife.inject(this, this);
 
         setOnClickListener(mClickListener);

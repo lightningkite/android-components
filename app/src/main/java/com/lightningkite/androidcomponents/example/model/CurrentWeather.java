@@ -1,6 +1,8 @@
 package com.lightningkite.androidcomponents.example.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.lightningkite.androidcomponents.form.AutoFormDeep;
+import com.lightningkite.androidcomponents.form.AutoFormIgnore;
 
 import java.util.ArrayList;
 
@@ -13,13 +15,20 @@ import co.uk.rushorm.core.annotations.RushList;
  * Created by jivie on 6/3/15.
  */
 public class CurrentWeather extends RushObject {
+    @AutoFormDeep
     public Coordinates coord;
+    @AutoFormDeep
     public Sys sys;
+    @AutoFormIgnore
     @RushList(classType = Weather.class)
     public ArrayList<Weather> weather;
+    @AutoFormDeep
     public Main main;
+    @AutoFormDeep
     public Wind wind;
+    @AutoFormDeep
     public Rain rain;
+    @AutoFormDeep
     public Clouds clouds;
     public long dt;
     public long id;

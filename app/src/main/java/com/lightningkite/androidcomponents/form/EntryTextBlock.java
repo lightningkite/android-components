@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.LayoutRes;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -42,12 +43,31 @@ public class EntryTextBlock extends FrameLayout implements FormEntry {
         this.mDoneListener = mDoneListener;
     }
 
+
+    static private int mDefaultLayoutRes = R.layout.entry_text;
+
+    public static int getDefaultLayoutRes() {
+        return mDefaultLayoutRes;
+    }
+
+    public static void setDefaultLayoutRes(int defaultLayoutRes) {
+        mDefaultLayoutRes = defaultLayoutRes;
+    }
+
+    private int mLayoutRes = mDefaultLayoutRes;
+
     public EntryTextBlock(Context context) {
         super(context);
         init();
         mTextView.setInputType(InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE);
         mTextView.setSingleLine(true);
         mTextView.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+    }
+
+    public EntryTextBlock(Context context, @LayoutRes int layout) {
+        super(context);
+        mLayoutRes = layout;
+        init();
     }
 
     public EntryTextBlock(Context context, AttributeSet attrs) {
@@ -70,7 +90,7 @@ public class EntryTextBlock extends FrameLayout implements FormEntry {
     }
 
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.entry_text, this, true);
+        LayoutInflater.from(getContext()).inflate(mLayoutRes, this, true);
         ButterKnife.inject(this, this);
         mTextView.setSaveEnabled(false);
         mTextView.setOnEditorActionListener(new EditText.OnEditorActionListener() {
