@@ -1,8 +1,12 @@
 package com.lightningkite.androidcomponents.example.bigview;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 
 import com.lightningkite.androidcomponents.R;
 import com.lightningkite.androidcomponents.bigview.BigView;
@@ -39,7 +43,8 @@ public class FormBigView extends BigView {
                 .addSelect("testSelect", "Test Select", new EntrySelectBlock.EntrySelectListener() {
                     @Override
                     public void onSelect(EntrySelectBlock v) {
-                        Log.d("FormBigView", "Test Select hit!");
+                        AlertDialog.Builder builder = makeTextEntryDialog(v);
+                        builder.show();
                     }
                 }, true)
                 .addSpinner("fav_fruit",
@@ -59,6 +64,33 @@ public class FormBigView extends BigView {
                 )
                 .start();
         mFormView.focusOnFirst();
+    }
+
+    private AlertDialog.Builder makeTextEntryDialog(final EntrySelectBlock block) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Title");
+
+        // Set up the input
+        final EditText input = new EditText(getContext());
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                block.setData(input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return builder;
     }
 
     @OnClick(R.id.form_validate)

@@ -14,6 +14,10 @@ import android.widget.TextView;
 
 import com.lightningkite.androidcomponents.R;
 
+import org.parceler.Parcels;
+
+import java.io.Serializable;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -26,7 +30,8 @@ import butterknife.Optional;
  */
 public class EntrySelectBlock extends FrameLayout implements FormEntry {
     public static final String DATA_TEXT = "text";
-    public static final String DATA_ID = "id";
+    public static final String DATA_OBJECT = "id";
+    private static final String DATA_TYPE = "type";
     @Optional
     @InjectView(R.id.entry_select_label)
     TextView mLabelTextView;
@@ -35,7 +40,8 @@ public class EntrySelectBlock extends FrameLayout implements FormEntry {
     @InjectView(R.id.entry_select_icon)
     ImageView mIconView;
     private EntrySelectListener mListener;
-    private boolean mEditable;
+    private boolean mEditable = true;
+    private Object mData = null;
 
 
     static private int mDefaultLayoutRes = R.layout.entry_select;
@@ -109,21 +115,13 @@ public class EntrySelectBlock extends FrameLayout implements FormEntry {
 
     @Override
     public Object getData() {
-        Bundle data = new Bundle();
-        data.putString(DATA_TEXT, mTextView.getText().toString());
-        data.putLong(DATA_ID, mSelectedId);
-        return data;
+        return mData;
     }
 
     @Override
     public void setData(Object object) {
-        if (object instanceof Bundle) {
-            Bundle data = (Bundle) object;
-            mSelectedId = data.getLong(DATA_ID, -1);
-            setText(data.getString(DATA_TEXT));
-        } else {
-            throw new IllegalArgumentException("Data must be a Bundle with an ID and text in it!");
-        }
+        mData = object;
+        setText(String.valueOf(mData));
     }
 
     @Override
@@ -138,22 +136,56 @@ public class EntrySelectBlock extends FrameLayout implements FormEntry {
         void onSelect(EntrySelectBlock v);
     }
 
-    private long mSelectedId = -1;
-
-    public long getSelectedId() {
-        return mSelectedId;
-    }
-
-    public void setSelectedId(long mSelectedId) {
-        this.mSelectedId = mSelectedId;
-    }
-
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
         bundle.putParcelable("instanceState", super.onSaveInstanceState());
-        bundle.putString(DATA_TEXT, mTextView.getText().toString());
-        bundle.putLong(DATA_ID, mSelectedId);
+        if(mData instanceof Integer) {
+            bundle.putInt(DATA_TYPE, 1);
+            bundle.putInt(DATA_OBJECT, (Integer) mData);
+        } else if(mData instanceof Long) {
+            bundle.putInt(DATA_TYPE, 2);
+            bundle.putLong(DATA_OBJECT, (Long) mData);
+        } else if(mData instanceof Float) {
+            bundle.putInt(DATA_TYPE, 3);
+            bundle.putFloat(DATA_OBJECT, (Float) mData);
+        } else if(mData instanceof Double) {
+            bundle.putInt(DATA_TYPE, 4);
+            bundle.putDouble(DATA_OBJECT, (Double) mData);
+        } else if(mData instanceof Boolean) {
+            bundle.putInt(DATA_TYPE, 5);
+            bundle.putBoolean(DATA_OBJECT, (Boolean) mData);
+        } else if(mData instanceof String) {
+            bundle.putInt(DATA_TYPE, 6);
+            bundle.putString(DATA_OBJECT, (String) mData);
+        } else if(mData instanceof int[]) {
+            bundle.putInt(DATA_TYPE, 101);
+            bundle.putIntArray(DATA_OBJECT, (int[]) mData);
+        } else if(mData instanceof long[]) {
+            bundle.putInt(DATA_TYPE, 102);
+            bundle.putLongArray(DATA_OBJECT, (long[]) mData);
+        } else if(mData instanceof float[]) {
+            bundle.putInt(DATA_TYPE, 103);
+            bundle.putFloatArray(DATA_OBJECT, (float[]) mData);
+        } else if(mData instanceof double[]) {
+            bundle.putInt(DATA_TYPE, 104);
+            bundle.putDoubleArray(DATA_OBJECT, (double[]) mData);
+        } else if(mData instanceof boolean[]) {
+            bundle.putInt(DATA_TYPE, 105);
+            bundle.putBooleanArray(DATA_OBJECT, (boolean[]) mData);
+        } else if(mData instanceof String[]) {
+            bundle.putInt(DATA_TYPE, 16);
+            bundle.putStringArray(DATA_OBJECT, (String[]) mData);
+        } else if(mData instanceof Parcelable) {
+            bundle.putInt(DATA_TYPE, 7);
+            bundle.putParcelable(DATA_OBJECT, (Parcelable) mData);
+        } else if(mData instanceof Serializable) {
+            bundle.putInt(DATA_TYPE, 8);
+            bundle.putSerializable(DATA_OBJECT, (Serializable) mData);
+        } else {
+            bundle.putInt(DATA_TYPE, 0);
+            bundle.putParcelable(DATA_OBJECT, Parcels.wrap(mData));
+        }
         return bundle;
     }
 
@@ -162,8 +194,14 @@ public class EntrySelectBlock extends FrameLayout implements FormEntry {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
             super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
-            mTextView.setText(bundle.getString(DATA_TEXT));
-            mSelectedId = bundle.getLong(DATA_ID);
+            switch(bundle.getInt(DATA_TYPE)){
+                case 0:
+                    mData = Parcels.unwrap((Parcelable) bundle.get(DATA_OBJECT));
+                    break;
+                default:
+                    mData = bundle.get(DATA_OBJECT);
+            }
+            mTextView.setText(String.valueOf(mData));
         }
     }
 }

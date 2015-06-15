@@ -112,6 +112,7 @@ public class FormView extends FrameLayout implements FormEntry {
         mDefaultResultListener = defaultResultListener;
     }
 
+
     private EntryTextBlock addText(String id, String label, String hint, TextValidator validator) {
         EntryTextBlock v = new EntryTextBlock(getContext());
         v.setLabel(label);
@@ -126,6 +127,57 @@ public class FormView extends FrameLayout implements FormEntry {
         addBlock(id, v, v);
 
         return v;
+    }
+
+    private EntryTextBlock addText(String id, String label, String hint, TextValidator validator, @LayoutRes int layoutRes) {
+        EntryTextBlock v = new EntryTextBlock(getContext(), layoutRes);
+        v.setLabel(label);
+        v.setHint(hint);
+
+        if (validator != null) {
+            validator.setTextView(v.getTextView());
+            validator.setListener(mDefaultResultListener);
+            mValidator.add(validator);
+        }
+
+        addBlock(id, v, v);
+
+        return v;
+    }
+
+    public FormView addText(String id, String label, String hint, boolean optional, @LayoutRes int layoutRes) {
+        addText(id, label, hint, new TextValidator(null, optional), layoutRes);
+        return this;
+    }
+
+    public FormView addTextPassword(String id, String label, String hint, int minLength, @LayoutRes int layoutRes) {
+        EntryTextBlock v = addText(id, label, hint, new PasswordValidator(null, minLength), layoutRes);
+        v.getTextView().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        return this;
+    }
+
+    public FormView addTextEmail(String id, String label, String hint, boolean optional, @LayoutRes int layoutRes) {
+        EntryTextBlock v = addText(id, label, hint, new EmailValidator(null, optional), layoutRes);
+        v.getTextView().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        return this;
+    }
+
+    public FormView addTextName(String id, String label, String hint, boolean optional, @LayoutRes int layoutRes) {
+        EntryTextBlock v = addText(id, label, hint, new NameValidator(null, optional), layoutRes);
+        v.getTextView().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        return this;
+    }
+
+    public FormView addTextInteger(String id, String label, String hint, boolean optional, @LayoutRes int layoutRes) {
+        EntryTextBlock v = addText(id, label, hint, new IntegerValidator(null, optional), layoutRes);
+        v.getTextView().setInputType(InputType.TYPE_CLASS_NUMBER);
+        return this;
+    }
+
+    public FormView addTextDecimal(String id, String label, String hint, boolean optional, @LayoutRes int layoutRes) {
+        EntryTextBlock v = addText(id, label, hint, new DecimalValidator(null, optional), layoutRes);
+        v.getTextView().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        return this;
     }
 
     public FormView addText(String id, String label, String hint, boolean optional) {
@@ -173,6 +225,39 @@ public class FormView extends FrameLayout implements FormEntry {
         return this;
     }
 
+    public FormView addToggle(String id, String label, boolean checked, @LayoutRes int layoutRes) {
+        EntryToggleBlock v = new EntryToggleBlock(getContext(), layoutRes);
+        v.setChecked(checked);
+        v.setLabel(label);
+
+        addBlock(id, v, v);
+
+        return this;
+    }
+
+    public FormView addSelect(String id, String label, EntrySelectBlock.EntrySelectListener listener, boolean optional, @LayoutRes int layoutRes) {
+        final EntrySelectBlock v = new EntrySelectBlock(getContext(), layoutRes);
+        v.setSelectListener(listener);
+        v.setLabel(label);
+
+        if (!optional) {
+            mValidator.add(new Validator() {
+                @Override
+                public void validate() {
+                    super.validate();
+                    if (mResult != RESULT_OK) return;
+                    if (v.getData() == null) {
+                        result(1, v);
+                    }
+                }
+            });
+        }
+
+        addBlock(id, v, v);
+
+        return this;
+    }
+
     public FormView addSelect(String id, String label, EntrySelectBlock.EntrySelectListener listener, boolean optional) {
         final EntrySelectBlock v = new EntrySelectBlock(getContext());
         v.setSelectListener(listener);
@@ -184,12 +269,22 @@ public class FormView extends FrameLayout implements FormEntry {
                 public void validate() {
                     super.validate();
                     if (mResult != RESULT_OK) return;
-                    if (v.getSelectedId() == -1) {
+                    if (v.getData() != null) {
                         result(1, v);
                     }
                 }
             });
         }
+
+        addBlock(id, v, v);
+
+        return this;
+    }
+
+    public FormView addSpinner(String id, String label, SpinnerAdapter adapter, @LayoutRes int layoutRes) {
+        final EntrySpinnerBlock v = new EntrySpinnerBlock(getContext(), layoutRes);
+        v.setAdapter(adapter);
+        v.setLabel(label);
 
         addBlock(id, v, v);
 
@@ -309,45 +404,94 @@ public class FormView extends FrameLayout implements FormEntry {
                 boolean deep = false;
                 if (field.isAnnotationPresent(AutoFormDeep.class)) deep = true;
 
-                String name = field.getName();
-                String properName;
+                AutoFormLayout layoutAnnotation = field.getAnnotation(AutoFormLayout.class);
                 AutoFormDisplayName displayNameAnnotation = field.getAnnotation(AutoFormDisplayName.class);
+
+                String name = field.getName();
+                String displayName;
                 if (displayNameAnnotation != null) {
-                    properName = displayNameAnnotation.value();
+                    displayName = displayNameAnnotation.value();
                 } else {
-                    properName = toProperName(field.getName());
+                    displayName = toProperName(field.getName());
                 }
 
                 Class type = field.getType();
                 if (type == String.class) {
                     if (name.toLowerCase().contains("email")) {
-                        addTextEmail(name, properName, properName, true);
+                        if (layoutAnnotation != null) {
+                            addTextEmail(name, displayName, displayName, true, layoutAnnotation.value());
+                        } else {
+                            addTextEmail(name, displayName, displayName, true);
+                        }
                     } else if (name.toLowerCase().contains("name")) {
-                        addTextName(name, properName, properName, true);
+                        if (layoutAnnotation != null) {
+                            addTextName(name, displayName, displayName, true, layoutAnnotation.value());
+                        } else {
+                            addTextName(name, displayName, displayName, true);
+                        }
                     } else if (name.toLowerCase().contains("password")) {
-                        addTextPassword(name, properName, properName, 8);
+                        if (layoutAnnotation != null) {
+                            addTextPassword(name, displayName, displayName, 8, layoutAnnotation.value());
+                        } else {
+                            addTextPassword(name, displayName, displayName, 8);
+                        }
                     } else {
-                        addText(name, properName, properName, true);
+                        if (layoutAnnotation != null) {
+                            addText(name, displayName, displayName, true, layoutAnnotation.value());
+                        } else {
+                            addText(name, displayName, displayName, true);
+                        }
                     }
                 } else if (type == int.class || type == long.class) {
-                    addTextInteger(name, properName, properName, false);
+                    if (layoutAnnotation != null) {
+                        addTextInteger(name, displayName, displayName, false, layoutAnnotation.value());
+                    } else {
+                        addTextInteger(name, displayName, displayName, false);
+                    }
                 } else if (type == Integer.class || type == Long.class) {
-                    addTextInteger(name, properName, properName, true);
+                    if (layoutAnnotation != null) {
+                        addTextInteger(name, displayName, displayName, true, layoutAnnotation.value());
+                    } else {
+                        addTextInteger(name, displayName, displayName, true);
+                    }
                 } else if (type == Float.class || type == Double.class) {
-                    addTextDecimal(name, properName, properName, true);
+                    if (layoutAnnotation != null) {
+                        addTextDecimal(name, displayName, displayName, true, layoutAnnotation.value());
+                    } else {
+                        addTextDecimal(name, displayName, displayName, true);
+                    }
                 } else if (type == float.class || type == double.class) {
-                    addTextDecimal(name, properName, properName, true);
+                    if (layoutAnnotation != null) {
+                        addTextDecimal(name, displayName, displayName, false, layoutAnnotation.value());
+                    } else {
+                        addTextDecimal(name, displayName, displayName, false);
+                    }
                 } else if (type == boolean.class) {
-                    addToggle(name, properName, false);
+                    if (layoutAnnotation != null) {
+                        addToggle(name, displayName, false, layoutAnnotation.value());
+                    } else {
+                        addToggle(name, displayName, false);
+                    }
                 } else if (type == Boolean.class) {
-                    addToggle(name, properName, true);
+                    if (layoutAnnotation != null) {
+                        addToggle(name, displayName, true, layoutAnnotation.value());
+                    } else {
+                        addToggle(name, displayName, true);
+                    }
                 } else {
                     SpinnerAdapter spinnerAdapter;
                     if (fetcher != null && (spinnerAdapter = fetcher.fetch(type)) != null) {
-                        addSpinner(name, properName, spinnerAdapter);
+                        if (layoutAnnotation != null) {
+                            addSpinner(name, displayName, spinnerAdapter, layoutAnnotation.value());
+                        } else {
+                            addSpinner(name, displayName, spinnerAdapter);
+                        }
                     } else if (deep) {
-                        //addFromModel(type, fetcher, name);
-                        addForm(name, properName, new FormView(getContext()).addFromModel(type, fetcher));
+                        if (layoutAnnotation != null) {
+                            addForm(name, displayName, new FormView(getContext(), layoutAnnotation.value()).addFromModel(type, fetcher));
+                        } else {
+                            addForm(name, displayName, new FormView(getContext()).addFromModel(type, fetcher));
+                        }
                     }
                 }
 
@@ -492,5 +636,9 @@ public class FormView extends FrameLayout implements FormEntry {
     @Override
     public void notifyLast() {
 
+    }
+
+    public FormEntry getBlock(String stringId) {
+        return mEntries.get(stringId);
     }
 }
