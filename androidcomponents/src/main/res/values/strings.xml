@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Android Components</string>
+
+    <string name="ac_label_default_text">Default Text</string>
+    <string name="ac_label_date">Date</string>
+</resources>

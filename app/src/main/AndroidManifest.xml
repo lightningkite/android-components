@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lightningkite.androidcomponents" >
+    package="com.lightningkite.acexample">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -34,7 +34,7 @@
             android:value="false" />
 
         <activity
-            android:name=".example.ExampleBasicBVCActivity"
+            android:name=".ExampleBasicBVCActivity"
             android:label="@string/label_basic_bvc_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
