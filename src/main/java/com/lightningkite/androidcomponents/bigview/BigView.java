@@ -3,6 +3,7 @@ package com.lightningkite.androidcomponents.bigview;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.widget.FrameLayout;
 
 /**
@@ -79,5 +80,15 @@ public class BigView extends FrameLayout {
 
     public void finish() {
         mContainer.onFinish(mId);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return super.onSaveInstanceState();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
     }
 }
