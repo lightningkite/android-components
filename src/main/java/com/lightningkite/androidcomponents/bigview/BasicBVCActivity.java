@@ -12,7 +12,7 @@ import android.os.Bundle;
  * Created by jivie on 6/2/15.
  */
 public abstract class BasicBVCActivity extends Activity implements BigViewContainer {
-
+    
     public static final String EXTRA_BIGVIEW_NAME = "BasicBVCActivity.name";
     public BigView mView;
 
