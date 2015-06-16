@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import co.uk.rushorm.core.RushObject;
 
 /**
  * A base adapter for quickly building an adapter with a customized look.
@@ -63,6 +64,10 @@ public abstract class CustomListAdapter<ITEM, HOLDER> extends BaseAdapter {
 
     public List<ITEM> getList() {
         return mList;
+    }
+
+    public void setList(List<ITEM> list) {
+        mList = list;
     }
 
     public ITEM get(int position) {
