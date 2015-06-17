@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import co.uk.rushorm.core.RushObject;
 
 /**
  * A base adapter for quickly building an adapter with a customized look.
