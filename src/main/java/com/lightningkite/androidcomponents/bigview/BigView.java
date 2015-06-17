@@ -31,6 +31,10 @@ public class BigView extends FrameLayout {
         mId = id;
     }
 
+    public String getTitle() {
+        return null;
+    }
+
     public Activity getActivity() {
         return mActivity;
     }
