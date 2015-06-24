@@ -54,4 +54,10 @@
     <declare-styleable name="FontEditText">
         <attr name="font" />
     </declare-styleable>
+
+    <declare-styleable name="IOSToggle">
+        <attr name="color" />
+        <attr name="leftText" format="string" />
+        <attr name="rightText" format="string" />
+    </declare-styleable>
 </resources>
