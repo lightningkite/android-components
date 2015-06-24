@@ -14,8 +14,6 @@ import android.widget.TextView;
 
 import com.lightningkite.androidcomponents.R;
 
-import org.parceler.Parcels;
-
 import java.io.Serializable;
 
 /**
@@ -179,8 +177,7 @@ public class EntrySelectBlock extends FrameLayout implements FormEntry {
             bundle.putInt(DATA_TYPE, 8);
             bundle.putSerializable(DATA_OBJECT, (Serializable) mData);
         } else {
-            bundle.putInt(DATA_TYPE, 0);
-            bundle.putParcelable(DATA_OBJECT, Parcels.wrap(mData));
+            throw new IllegalArgumentException("mData's type not valid");
         }
         return bundle;
     }
@@ -190,13 +187,7 @@ public class EntrySelectBlock extends FrameLayout implements FormEntry {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
             super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
-            switch(bundle.getInt(DATA_TYPE)){
-                case 0:
-                    mData = Parcels.unwrap((Parcelable) bundle.get(DATA_OBJECT));
-                    break;
-                default:
-                    mData = bundle.get(DATA_OBJECT);
-            }
+            mData = bundle.get(DATA_OBJECT);
             mTextView.setText(String.valueOf(mData));
         }
     }

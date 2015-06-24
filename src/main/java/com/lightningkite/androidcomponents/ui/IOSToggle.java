@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,9 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lightningkite.androidcomponents.R;
-
-import org.parceler.Parcel;
-import org.parceler.Parcels;
 
 /**
  * Created by jivie on 6/23/15.
@@ -74,14 +72,14 @@ public class IOSToggle extends FrameLayout {
         mRightDrawable = mRightImage.getDrawable();
         mBorderDrawable = findViewById(R.id.ui_ios_toggle_border).getBackground();
         mSeparatorView = findViewById(R.id.ui_ios_toggle_separator);
-        setRightSelected(true);
+        initRightSelected(true);
     }
 
     public void setColor(int color) {
         mColor = color;
         mBorderDrawable.setColorFilter(makeFilter(1));
         mSeparatorView.setBackgroundColor(mColor);
-        setRightSelected(mRightSelected);
+        initRightSelected(mRightSelected);
     }
 
     private ColorMatrixColorFilter makeFilter(float colorAmount) {
@@ -111,17 +109,22 @@ public class IOSToggle extends FrameLayout {
         mRightText.setText(text);
     }
 
-    public void setRightSelected(boolean rightSelected) {
+    public void initRightSelected(boolean rightSelected) {
         internalSwitchSelected(rightSelected);
         mLeftDrawable.mutate().setColorFilter(makeFilter(rightSelected ? 0 : 1));
         mRightDrawable.mutate().setColorFilter(makeFilter(rightSelected ? 1 : 0));
+    }
+
+    public void setRightSelected(boolean rightSelected) {
+        initRightSelected(rightSelected);
+        if (mListener != null) mListener.stateChanged(this, rightSelected);
     }
 
     private ValueAnimator mAnimator;
 
     public void animateRightSelected(boolean rightSelected) {
         if (internalSwitchSelected(rightSelected)) return;
-
+        if (mListener != null) mListener.stateChanged(this, rightSelected);
         if (mAnimator != null) mAnimator.end();
         mAnimator = ValueAnimator.ofFloat(0, 1);
         mAnimator.setDuration(300);
@@ -142,7 +145,6 @@ public class IOSToggle extends FrameLayout {
         mRightText.setTextColor(rightSelected ? 0xFFFFFFFF : mColor);
         if (mRightSelected == rightSelected) return true;
         mRightSelected = rightSelected;
-        if (mListener != null) mListener.stateChanged(this, rightSelected);
         return false;
     }
 
@@ -162,31 +164,20 @@ public class IOSToggle extends FrameLayout {
         }
     };
 
-    @Parcel
-    static public class SaveState {
-        boolean rightSelected;
-        Parcelable superstate;
-
-        public SaveState() {
-        }
-
-        public SaveState(Parcelable _superstate, IOSToggle toggle) {
-            rightSelected = toggle.mRightSelected;
-            superstate = _superstate;
-        }
-    }
-
     @SuppressWarnings("NullableProblems")
     @Override
     protected Parcelable onSaveInstanceState() {
-        return Parcels.wrap(new SaveState(super.onSaveInstanceState(), this));
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("ss", super.onSaveInstanceState());
+        bundle.putBoolean("rightSelected", mRightSelected);
+        return bundle;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        SaveState savestate = Parcels.unwrap(state);
-        super.onRestoreInstanceState(savestate.superstate);
-        setRightSelected(savestate.rightSelected);
+        Bundle bundle = (Bundle) state;
+        super.onRestoreInstanceState(bundle.getParcelable("ss"));
+        setRightSelected(bundle.getBoolean("rightSelected"));
     }
 
     public interface OnStateChangeListener {
