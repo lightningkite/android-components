@@ -39,6 +39,10 @@ public class BigView extends FrameLayout {
         return mActivity;
     }
 
+    public Bundle getArguments() {
+        return mArguments;
+    }
+
     public int getId() {
         return mId;
     }
@@ -95,4 +99,5 @@ public class BigView extends FrameLayout {
     public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
     }
+
 }
