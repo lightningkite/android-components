@@ -177,7 +177,8 @@ public class IOSToggle extends FrameLayout {
     protected void onRestoreInstanceState(Parcelable state) {
         Bundle bundle = (Bundle) state;
         super.onRestoreInstanceState(bundle.getParcelable("ss"));
-        setRightSelected(bundle.getBoolean("rightSelected"));
+        initRightSelected(bundle.getBoolean("rightSelected"));
+        //setRightSelected();
     }
 
     public interface OnStateChangeListener {
