@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.widget.FrameLayout;
 
-import com.crashlytics.android.Crashlytics;
-
 /**
  * Contains a full screen of components, much like a fragment or an activity.
  * Created by jivie on 6/2/15.
@@ -31,16 +29,6 @@ public class BigView extends FrameLayout {
         mArguments = arguments;
         mActivity = container.getActivity();
         mId = id;
-
-        Crashlytics.log("Arguments: ");
-        for (String key : arguments.keySet()) {
-            Object val = arguments.get(key);
-            if (val != null) {
-                Crashlytics.log("\t" + key + ": " + val.toString());
-            } else {
-                Crashlytics.log("\t" + key + ": null");
-            }
-        }
     }
 
     public String getTitle() {
@@ -76,15 +64,6 @@ public class BigView extends FrameLayout {
     }
 
     public void onResult(int requestCode, int resultCode, Intent data) {
-        Crashlytics.log("On Result (request " + requestCode + ", result " + resultCode + "): ");
-        for (String key : data.getExtras().keySet()) {
-            Object val = data.getExtras().get(key);
-            if (val != null) {
-                Crashlytics.log("\t" + key + ": " + val.toString());
-            } else {
-                Crashlytics.log("\t" + key + ": null");
-            }
-        }
     }
 
     public void goTo(Class<? extends BigView> bigViewClass) {
@@ -100,15 +79,6 @@ public class BigView extends FrameLayout {
     }
 
     public void setResult(int resultCode, Intent data) {
-        Crashlytics.log("Set Result (code " + resultCode + "): ");
-        for (String key : data.getExtras().keySet()) {
-            Object val = data.getExtras().get(key);
-            if (val != null) {
-                Crashlytics.log("\t" + key + ": " + val.toString());
-            } else {
-                Crashlytics.log("\t" + key + ": null");
-            }
-        }
         mContainer.onSetResult(mId, resultCode, data);
     }
 
