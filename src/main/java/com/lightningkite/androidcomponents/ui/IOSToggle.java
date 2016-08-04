@@ -66,6 +66,7 @@ public class IOSToggle extends FrameLayout {
         mRightText = (TextView) findViewById(R.id.ui_ios_toggle_right_text);
         ImageView mLeftImage = (ImageView) findViewById(R.id.ui_ios_toggle_left_image);
         ImageView mRightImage = (ImageView) findViewById(R.id.ui_ios_toggle_right_image);
+//        if(!isInEditMode())
         mLeftImage.setOnClickListener(mLeftListener);
         mRightImage.setOnClickListener(mRightListener);
         mLeftDrawable = mLeftImage.getDrawable();
