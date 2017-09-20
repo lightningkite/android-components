@@ -116,7 +116,7 @@ public abstract class CustomListAdapter<ITEM, HOLDER> extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(mResource, parent, false);
             convertView.setTag(holder = makeHolder());
-            ButterKnife.inject(holder, convertView);
+            ButterKnife.bind(holder, convertView);
         } else {
             //noinspection unchecked
             holder = (HOLDER) convertView.getTag();

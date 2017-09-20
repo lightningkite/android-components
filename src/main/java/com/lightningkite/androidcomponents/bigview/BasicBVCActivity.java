@@ -3,6 +3,8 @@ package com.lightningkite.androidcomponents.bigview;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * A simple implementation of BigViewContainer.
@@ -11,7 +13,7 @@ import android.os.Bundle;
  * This class must be exted to define the default bigview to use if none is specified.
  * Created by jivie on 6/2/15.
  */
-public abstract class BasicBVCActivity extends Activity implements BigViewContainer {
+public abstract class BasicBVCActivity extends AppCompatActivity implements BigViewContainer {
     
     public static final String EXTRA_BIGVIEW_NAME = "BasicBVCActivity.name";
     public BigView mView;
@@ -119,6 +121,11 @@ public abstract class BasicBVCActivity extends Activity implements BigViewContai
     public void onStartIntentForResult(int id, Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
         overridePendingTransition();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mView.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 

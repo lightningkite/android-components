@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.widget.FrameLayout;
 
 /**
@@ -64,6 +65,9 @@ public class BigView extends FrameLayout {
     }
 
     public void onResult(int requestCode, int resultCode, Intent data) {
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     }
 
     public void goTo(Class<? extends BigView> bigViewClass) {

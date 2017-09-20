@@ -15,13 +15,13 @@ public class FontEditText extends EditText {
     public FontEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FontTextView);
-        updateTypeface(a.getString(R.styleable.FontTextView_font));
+        updateTypeface(a.getString(R.styleable.FontTextView_typeface));
     }
 
     public FontEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FontTextView);
-        updateTypeface(a.getString(R.styleable.FontTextView_font));
+        updateTypeface(a.getString(R.styleable.FontTextView_typeface));
     }
 
     public FontEditText(Context context) {
